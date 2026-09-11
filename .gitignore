@@ -45,3 +45,4 @@ yarn-error.log*
 # Scratch & temporary
 scratch/
 tmp/
+.legal-cache/

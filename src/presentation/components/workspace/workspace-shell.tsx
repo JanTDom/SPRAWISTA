@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { MatterFullAggregate } from "@/domain/repositories/matter-repository";
 import { CitationLink } from "@/domain/models/evidence";
+import { LegalResearchPanel } from "./legal-research-panel";
 
 interface WorkspaceShellProps {
   aggregate: MatterFullAggregate;
@@ -773,6 +774,11 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
                     </p>
                   </div>
                 )}
+              </div>
+
+              {/* ─── Badanie prawne na żywo ─── */}
+              <div className="border-t border-[#E1E3E7] pt-8">
+                <LegalResearchPanel />
               </div>
             </div>
           )}
