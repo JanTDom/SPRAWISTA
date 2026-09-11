@@ -1,0 +1,42 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F6F5F1" />
+  <g transform="translate(80, 80)">
+    <!-- Logo -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="10" width="28" height="34" rx="3" fill="#E1E3E7" />
+      <rect x="6" y="5" width="28" height="34" rx="3" fill="#FAF9F6" stroke="#D1D5DB" stroke-width="1.5" />
+      <rect x="12" y="0" width="28" height="34" rx="3" fill="#FFFFFF" stroke="#172338" stroke-width="2" />
+      <circle cx="12" cy="22" r="3" fill="#355CFF" />
+      <text x="52" y="28" font-family="Newsreader, Georgia, serif" font-size="34" font-weight="600" fill="#172338">Sprawista</text>
+      <circle cx="198" cy="24" r="3" fill="#355CFF" />
+    </g>
+
+    <!-- Main Headline -->
+    <text x="0" y="160" font-family="Newsreader, Georgia, serif" font-size="56" font-weight="600" fill="#172338" letter-spacing="-0.03em">
+      Od akt do pisma.
+    </text>
+    <text x="0" y="230" font-family="Newsreader, Georgia, serif" font-size="56" font-weight="600" fill="#355CFF" letter-spacing="-0.03em">
+      Bez gubienia dowodów.
+    </text>
+
+    <!-- Subtitle -->
+    <text x="0" y="310" font-family="Manrope, sans-serif" font-size="22" fill="#5F6774" letter-spacing="-0.01em">
+      Profesjonalna aplikacja webowa dla polskich kancelarii prawnych.
+    </text>
+    <text x="0" y="344" font-family="Manrope, sans-serif" font-size="22" fill="#5F6774" letter-spacing="-0.01em">
+      Przygotowanie sprawdzalnej odpowiedzi na pozew o zapłatę z umowy.
+    </text>
+
+    <!-- Key guarantees -->
+    <g transform="translate(0, 410)">
+      <rect x="0" y="0" width="240" height="42" rx="6" fill="#FFFFFF" stroke="#E1E3E7" />
+      <text x="20" y="26" font-family="Manrope, sans-serif" font-size="14" font-weight="600" fill="#172338">100% powiązań ze źródłami</text>
+
+      <rect x="256" y="0" width="220" height="42" rx="6" fill="#FFFFFF" stroke="#E1E3E7" />
+      <text x="276" y="26" font-family="Manrope, sans-serif" font-size="14" font-weight="600" fill="#172338">Analiza kontrargumentów</text>
+
+      <rect x="492" y="0" width="220" height="42" rx="6" fill="#FFFFFF" stroke="#E1E3E7" />
+      <text x="512" y="26" font-family="Manrope, sans-serif" font-size="14" font-weight="600" fill="#172338">Czysty eksport do Word</text>
+    </g>
+  </g>
+</svg>

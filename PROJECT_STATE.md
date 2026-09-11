@@ -1,43 +1,41 @@
 # PROJECT_STATE.md — Stan Projektu SPRAWISTA
 
-**Ostatnia aktualizacja**: 2026-09-11  
-**Status fazy**: Faza 0 — Konfiguracja Trwała Systemu Pracy i Standardów (Zakończona)
+**Ostatnia aktualizacja**: 2026-09-12  
+**Status fazy**: Faza 1 & 2 — Pełna Implementacja Lokalna, Demonstrator Syntetyczny, Workspace i Eksport DOCX (Zakończona Sukcesem)
 
 ---
 
 ## 1. Aktualny Status Projektu
-- Repozytorium Git zostało zainicjalizowane na gałęzi `main`.
-- Utworzono strukturę katalogów reguł (`.agents/rules/`), umiejętności (`.agents/skills/`) oraz dokumentacji domenowej (`docs/`).
-- Utworzono 7 nienegocjowalnych reguł architektonicznych i domenowych.
-- Utworzono 20 kompletnych projektowych skilli wykonawczych zgodnych ze standardem Antigravity.
-- Stworzono zestaw dokumentów prawdy projektu: `AGENTS.md`, `PROJECT_STATE.md`, `DECISIONS.md`, `CAPABILITIES.md`, `IMPLEMENTATION_PLAN.md`, `QUALITY_GATES.md`.
+- Repozytorium Git na gałęzi `main`.
+- Aplikacja Next.js 15.2.1 (React 19, TypeScript strict, Tailwind CSS 3.4) skompilowana produkcyjnie (`next build`) i uruchomiona w trybie produkcyjnym pod adresem: `http://localhost:3000`.
+- Pełny pipeline logiki domenowej: 7 statusów ontologicznych dowodów, kalkulatory terminów procesowych (art. 115 K.c.) i odsetek (transakcje handlowe vs cywilne), izolacja multitenancy na poziomie repozytorium.
+- Realistyczny przypadek syntetyczny (*ABC Budownictwo Generalny Wykonawca Sp. z o.o.* vs *XYZ Developer S.A.*, sygn. akt XVI GC 1420/26, WPS 147 600,00 zł) z 10 kompletnymi dokumentami akt sprawy, chronologią, mapą zarzutów, audytem przed podpisem i symulacją riposty powoda (Adversarial Review).
+- Dwuszpaltowy pulpit pracy (Split-Screen Workspace) z interaktywnym skokiem cytowania „Od zdania do dowodu” (podświetlenie aktywnego chunka z odznaką `AKTYWNY CYTAT ↗`).
+- Deterministyczny generator i pobieranie plików DOCX (`/api/export/docx/[matterId]`) z wymogami polskiego sądownictwa (35 mm lewy margines na wszycie, Times New Roman 12pt, interlinia 1.5, numeracja stron `Strona X z Y`).
+- Zestaw 8 testów jednostkowych i integracyjnych przechodzi w 100% (`npm test`).
+- Typecheck TypeScript (`npm run typecheck`) bez błędów.
+- Weryfikacja wizualna w przeglądarce (Puppeteer) potwierdzona na desktopie (1440x900), laptopie (1280x800) i urządzeniu mobilnym (390x844).
 
 ---
 
-## 2. Działające Elementy
-- [x] Struktura reguł `.agents/rules/` (pełna zgodność z limitem znaków <10 000).
-- [x] Indeks i architektura skilli `.agents/skills/`.
-- [x] Konfiguracja kontroli wersji `.gitignore`.
-- [x] Audyt dostępności narzędzi środowiskowych (`CAPABILITIES.md`).
+## 2. Działające Elementy i Trasy
+- [x] `http://localhost:3000/` — Strona główna z demonstratorem „Od zdania do dowodu”, 3 etapami procesu, podglądem Adversarial Review, audytu przed podpisem, cennikiem i FAQ.
+- [x] `http://localhost:3000/demo` — Pełnowymiarowy pulpit pracy (Split-Screen Workspace) na danych syntetycznych.
+- [x] `http://localhost:3000/app/sprawy` — Pulpit spraw kancelarii z filtrami, statusami i metrykami.
+- [x] `http://localhost:3000/app/sprawy/matter-synth-001/workspace` — Dedykowany pulpit pracy ze sprawą.
+- [x] `http://localhost:3000/jak-dziala` — Szczegółowa specyfikacja wieloetapowego procesu merytorycznego.
+- [x] `http://localhost:3000/bezpieczenstwo` — 7 filarów ochrony tajemnicy kancelaryjnej i zgodności z RODO/EOG.
+- [x] `http://localhost:3000/cennik` — Transparentny plan Kancelaria Pro (599 zł netto / m-c) bez ukrytych opłat.
+- [x] `http://localhost:3000/api/export/docx/matter-synth-001` — Prawdziwy, binarny generator DOCX z poprawnym nagłówkiem OpenXML ZIP.
 
 ---
 
-## 3. Aktywne Blokady i Braki Konfiguracyjne
-1. **Brak kluczy API zewnętrznych usług**:
-   - Brak skonfigurowanych zmiennych dla Supabase, Stripe, Trigger.dev, Vercel oraz dostawców modeli AI (Gemini / OpenAI / Anthropic) w środowisku uruchomieniowym.
-   - Wymagane utworzenie pliku `.env.example` i podpięcie kont przed fazą integracji.
-2. **Brak zainstalowanych globalnych narzędzi CLI**:
-   - `supabase`, `vercel`, `stripe`, `trigger`, `gh` nie są zainstalowane w ścieżce globalnej systemu. Czynności mogą być wykonywane przez lokalne biblioteki NPM i skrypty Node/Python.
+## 3. Środowisko i Migracja
+- **Aktualne środowisko**: Lokalna produkcja (`npm start` na porcie 3000).
+- **Następny krok (zgodnie z instrukcją użytkownika)**: Przeniesienie na infrastrukturę docelową (Vercel + Supabase PostgreSQL z RLS + Trigger.dev + Stripe) po udostępnieniu kluczy dostępowych i konfiguracji kont chmurowych.
 
 ---
 
-## 4. Ostatni Sprawdzony Commit
-- `dbb4be6` — `chore(config): setup durable project system, rules, skills and documentation`.
-
----
-
-## 5. Następne Zadanie (Faza 1 — Prompt Wykonawczy)
-- Oczekiwanie na prompt wykonawczy od użytkownika:
-  - Inicjalizacja projektu Next.js 15+ (App Router, TypeScript strict, Tailwind CSS).
-  - Przygotowanie fundamentu wizualnego Editorial Precision (fonty, tokeny, motyw).
-  - Implementacja pierwszego zarysu widoku Document Workspace.
+## 4. Ostatni Commit
+- `c87dea1` — `docs: record initial project system setup and baseline state`
+- Przygotowany commit: `feat: complete local web application, synthetic demo, workspace and DOCX generator`.

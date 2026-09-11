@@ -1,0 +1,36 @@
+<svg width="420" height="360" viewBox="0 0 420 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="420" height="360" rx="12" fill="#F6F5F1" />
+  
+  <!-- Stacked Mobile Concept: Dossier chunk above, Pleading below with link -->
+  <!-- Top: Raw Evidence Chunk -->
+  <g transform="translate(24, 20)">
+    <rect width="372" height="110" rx="6" fill="#FFFFFF" stroke="#E1E3E7" stroke-width="1.2" />
+    <text x="16" y="24" font-family="Manrope, sans-serif" font-size="11" font-weight="600" fill="#172338">Akta sprawy: Protokół odbioru (Karta 28)</text>
+    <rect x="16" y="34" width="220" height="5" rx="1.5" fill="#8C93A0" />
+    <rect x="12" y="48" width="348" height="46" rx="4" fill="#FEF7E0" stroke="#B06000" stroke-width="1" />
+    <text x="20" y="66" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#B06000">Zgłoszenie wad istotnych w terminie</text>
+    <text x="20" y="82" font-family="Manrope, sans-serif" font-size="9" fill="#5F6774">Odmowa podpisania z winy wykonawcy • art. 647 K.c.</text>
+  </g>
+
+  <!-- Vector link down -->
+  <path d="M210 130 L210 160" stroke="#355CFF" stroke-width="2" stroke-dasharray="3 3" />
+  <circle cx="210" cy="145" r="3.5" fill="#355CFF" />
+
+  <!-- Bottom: Procedural Draft Assertion -->
+  <g transform="translate(24, 160)">
+    <rect width="372" height="175" rx="8" fill="#FFFFFF" stroke="#172338" stroke-width="1.8" />
+    <text x="16" y="28" font-family="Newsreader, serif" font-size="14" font-weight="600" fill="#172338">Odpowiedź na pozew (Szkic K.p.c.)</text>
+    <text x="16" y="46" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#355CFF">Sygn. akt XVI GC 1420/26</text>
+    <line x1="16" y1="56" x2="356" y2="56" stroke="#E1E3E7" stroke-width="1" />
+    
+    <rect x="12" y="68" width="348" height="52" rx="4" fill="#EEF2FF" stroke="#355CFF" stroke-width="1.2" />
+    <text x="20" y="86" font-family="Newsreader, serif" font-size="11" fill="#172338">„Wnoszę o oddalenie powództwa w całości...”</text>
+    <rect x="20" y="96" width="90" height="16" rx="3" fill="#355CFF" />
+    <text x="26" y="108" font-family="JetBrains Mono, monospace" font-size="8" font-weight="600" fill="#FFFFFF">Karta 28 ↗</text>
+    <text x="120" y="108" font-family="Manrope, sans-serif" font-size="8.5" fill="#137333">✓ 100% poparcie w dowodzie</text>
+
+    <!-- Bottom summary badge -->
+    <rect x="12" y="130" width="348" height="32" rx="4" fill="#F6F5F1" />
+    <text x="20" y="150" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#172338">Eksport: Pełny, edytowalny plik Word (DOCX)</text>
+  </g>
+</svg>
