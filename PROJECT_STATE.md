@@ -32,7 +32,7 @@
 ---
 
 ## 4. Ostatni Sprawdzony Commit
-- `Inicjalizacja repozytorium i konfiguracji Fazy 0` (stan roboczy przed pierwszym commitem).
+- `dbb4be6` — `chore(config): setup durable project system, rules, skills and documentation`.
 
 ---
 
