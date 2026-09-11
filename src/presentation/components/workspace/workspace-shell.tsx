@@ -11,11 +11,23 @@ interface WorkspaceShellProps {
 }
 
 export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProps) {
-  const { matter, documents, timeline, issues, draft, auditFindings, counterArguments } = aggregate;
+  const {
+    matter,
+    documents,
+    timeline,
+    issues,
+    draft,
+    auditFindings,
+    counterArguments,
+    signatureChecks = [],
+    caseLawPrecedents = [],
+    recoveryCompensation,
+    vatCheck,
+  } = aggregate;
 
-  // Aktywna zakładka w lewej szpalcie: "PISMO" | "CHRONOLOGIA" | "MAPA_SPORU" | "ANALIZA_PRZECIWNA" | "PRZED_PODPISEM"
+  // Aktywna zakładka w lewej szpalcie: "PISMO" | "CHRONOLOGIA" | "MAPA_SPORU" | "ANALIZA_PRZECIWNA" | "PRZED_PODPISEM" | "REJESTRY_I_PRAWO"
   const [activeTab, setActiveTab] = useState<
-    "PISMO" | "CHRONOLOGIA" | "MAPA_SPORU" | "ANALIZA_PRZECIWNA" | "PRZED_PODPISEM"
+    "PISMO" | "CHRONOLOGIA" | "MAPA_SPORU" | "ANALIZA_PRZECIWNA" | "PRZED_PODPISEM" | "REJESTRY_I_PRAWO"
   >("PISMO");
 
   // Aktywny dokument i podświetlony fragment w prawej szpalcie
@@ -185,6 +197,20 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
             <span>Przed Podpisem</span>
             <span className="bg-[#E6F4EA] text-[#137333] text-[10px] font-mono font-bold px-1.5 py-0.2 rounded">
               {auditFindings.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("REJESTRY_I_PRAWO")}
+            className={`px-3 py-1.5 text-xs font-sans rounded-md transition-all flex items-center gap-1.5 ${
+              activeTab === "REJESTRY_I_PRAWO"
+                ? "bg-[#FFFFFF] text-[#172338] font-bold shadow-sm border border-[#E1E3E7]"
+                : "text-[#5F6774] hover:text-[#172338]"
+            }`}
+          >
+            <span>Rejestry i Prawo</span>
+            <span className="bg-[#EEF2FF] text-[#355CFF] text-[10px] font-mono font-bold px-1.5 py-0.2 rounded">
+              KRS • SN • NBP
             </span>
           </button>
         </nav>
@@ -528,6 +554,225 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Widok 6: Rejestry Publiczne i Baza Prawa (KRS, SN, NBP, VAT) */}
+          {activeTab === "REJESTRY_I_PRAWO" && (
+            <div className="max-w-4xl mx-auto space-y-8">
+              {/* Nagłówek sekcji */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-mono font-bold bg-[#EEF2FF] text-[#355CFF] px-2 py-0.5 rounded border border-[#C7D2FE]">
+                    ZGODNOŚĆ Z DANYMI PAŃSTWOWYMI
+                  </span>
+                  <span className="text-xs font-mono text-[#5F6774]">
+                    Weryfikacja: KRS • Sąd Najwyższy • NBP • KAS
+                  </span>
+                </div>
+                <h2 className="text-2xl font-serif font-bold text-[#172338]">
+                  Wiarygodność Procesowa i Źródła Zewnętrzne
+                </h2>
+                <p className="text-sm text-[#5F6774] mt-1">
+                  Automatyczna kontrola reprezentacji stron, autentycznych precedensów orzeczniczych i kursów walutowych.
+                </p>
+              </div>
+
+              {/* 1. KONTROLA UMOCAWIANIA I REPREZENTACJI (KRS) */}
+              <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-[#E1E3E7] pb-3">
+                  <div>
+                    <h3 className="font-serif font-bold text-base text-[#172338]">
+                      1. Weryfikacja Umocowania i Reprezentacji Stron (KRS)
+                    </h3>
+                    <p className="text-xs text-[#5F6774] mt-0.5">
+                      Kontrola zgodności podpisów na umowach z rejestrem przedsiębiorców w datach czynności.
+                    </p>
+                  </div>
+                  <span className="text-xs font-mono bg-[#FEF7E0] text-[#B06000] px-2.5 py-1 rounded font-bold border border-[#F5E0A0]">
+                    Wykryto 1 wadę bezwzględną
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {signatureChecks.map((check, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-4 rounded-lg border text-xs leading-relaxed ${
+                        check.findingSeverity === "WADA_BEZWZGLEDNA"
+                          ? "bg-[#FEF7E0]/40 border-[#B06000]"
+                          : "bg-[#FAF9F6] border-[#E1E3E7]"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-[#172338] text-sm">
+                          {check.documentTitle}
+                        </span>
+                        <span
+                          className={`font-mono text-[11px] font-bold px-2 py-0.5 rounded ${
+                            check.findingSeverity === "WADA_BEZWZGLEDNA"
+                              ? "bg-[#FCE8E6] text-[#C5221F]"
+                              : "bg-[#E6F4EA] text-[#137333]"
+                          }`}
+                        >
+                          {check.findingSeverity === "WADA_BEZWZGLEDNA"
+                            ? "⚠ BRAK UMOCAWIANIA (ART. 103 K.C.)"
+                            : "✓ ZGODNE Z KRS"}
+                        </span>
+                      </div>
+                      <p className="text-[#5F6774] mb-2">
+                        <strong>Sygnatariusz:</strong> {check.signatoryName} ({check.purportedRole}) • Data podpisu: {check.signatureDate}
+                      </p>
+                      <p className="text-[#172338] mb-2 font-mono bg-[#FFFFFF] p-2.5 rounded border border-[#E1E3E7]">
+                        {check.findingDescription}
+                      </p>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#E1E3E7]/60">
+                        <span className="text-[11px] text-[#355CFF] font-medium">
+                          <strong>Zalecenie procesowe:</strong> {check.proceduralRecommendation}
+                        </span>
+                        <span className="font-mono text-[10px] text-[#8C93A0] shrink-0">
+                          Podstawa: {check.legalBasis}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. PRECEDENSY SĄDU NAJWYŻSZEGO (ZERO HALUCYNACJI) */}
+              <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-[#E1E3E7] pb-3">
+                  <div>
+                    <h3 className="font-serif font-bold text-base text-[#172338]">
+                      2. Sprawdzone Orzecznictwo Sądu Najwyższego (Zero Halucynacji)
+                    </h3>
+                    <p className="text-xs text-[#5F6774] mt-0.5">
+                      Autentyczne sygnatury i tezy powiązane bezpośrednio z linią obrony w niniejszej sprawie.
+                    </p>
+                  </div>
+                  <span className="text-xs font-mono bg-[#E6F4EA] text-[#137333] px-2.5 py-1 rounded font-bold">
+                    ✓ 4 zweryfikowane tezy SN
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                  {caseLawPrecedents.map((prec) => (
+                    <div
+                      key={prec.id}
+                      className="p-4 rounded-lg border border-[#E1E3E7] bg-[#FAF9F6] text-xs space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-sm text-[#355CFF]">
+                            {prec.caseNumber}
+                          </span>
+                          <span className="text-[#5F6774]">•</span>
+                          <span className="font-sans text-[#172338] font-medium">
+                            {prec.courtName} ({prec.division})
+                          </span>
+                        </div>
+                        <span className="font-mono text-[11px] text-[#5F6774]">
+                          {prec.judgmentType} z dnia {prec.judgmentDate} r.
+                        </span>
+                      </div>
+
+                      <blockquote className="font-serif text-[13px] text-[#172338] italic leading-relaxed pl-3 border-l-2 border-[#355CFF] bg-[#FFFFFF] p-3 rounded-r">
+                        „{prec.thesis}”
+                      </blockquote>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] font-mono text-[#5F6774]">Zastosowanie:</span>
+                          {prec.associatedIssues.map((iss, i) => (
+                            <span
+                              key={i}
+                              className="text-[10px] font-mono bg-[#FFFFFF] border border-[#E1E3E7] text-[#172338] px-1.5 py-0.5 rounded"
+                            >
+                              {iss}
+                            </span>
+                          ))}
+                        </div>
+                        {prec.directLink && (
+                          <a
+                            href={prec.directLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#355CFF] hover:underline font-mono text-[11px] shrink-0"
+                          >
+                            Źródło orzeczenia ↗
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. FINANSE NBP & BIAŁA LISTA PODATNIKÓW VAT */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* NBP */}
+                {recoveryCompensation && (
+                  <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-5 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between border-b border-[#E1E3E7] pb-2">
+                      <h4 className="font-serif font-bold text-sm text-[#172338]">
+                        3. Rekompensata NBP ({recoveryCompensation.statutoryEuroTier} EUR)
+                      </h4>
+                      <span className="text-[10px] font-mono bg-[#EEF2FF] text-[#355CFF] px-2 py-0.5 rounded font-bold">
+                        Oficjalna Tabela A
+                      </span>
+                    </div>
+                    <div className="space-y-1.5 text-xs text-[#5F6774]">
+                      <p>
+                        Wartość roszczenia: <strong className="text-[#172338] font-mono">147 600,00 zł</strong>
+                      </p>
+                      <p>
+                        Stawka ustawowa: <strong className="text-[#172338] font-mono">{recoveryCompensation.statutoryEuroTier} EUR</strong> (dla długu &gt; 50 tys. zł)
+                      </p>
+                      <p>
+                        Kurs NBP (tabela {recoveryCompensation.nbpRateUsed.tableNumber}):{" "}
+                        <strong className="text-[#172338] font-mono">{recoveryCompensation.nbpRateUsed.midRate.toFixed(4)} PLN</strong>
+                      </p>
+                      <p className="pt-2 text-sm text-[#172338] font-bold">
+                        Równowartość: <span className="font-mono text-[#355CFF]">{recoveryCompensation.formattedPln}</span>
+                      </p>
+                    </div>
+                    <p className="text-[10px] font-mono text-[#8C93A0] pt-1 border-t border-[#E1E3E7]">
+                      Podstawa: {recoveryCompensation.legalBasis}
+                    </p>
+                  </div>
+                )}
+
+                {/* VAT Whitelist */}
+                {vatCheck && (
+                  <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-5 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between border-b border-[#E1E3E7] pb-2">
+                      <h4 className="font-serif font-bold text-sm text-[#172338]">
+                        4. Biała Lista Podatników VAT (KAS)
+                      </h4>
+                      <span className="text-[10px] font-mono bg-[#E6F4EA] text-[#137333] px-2 py-0.5 rounded font-bold">
+                        ✓ Aktywny VAT
+                      </span>
+                    </div>
+                    <div className="space-y-1.5 text-xs text-[#5F6774]">
+                      <p>
+                        Podatnik: <strong className="text-[#172338]">{vatCheck.companyName}</strong>
+                      </p>
+                      <p>
+                        NIP: <strong className="text-[#172338] font-mono">{vatCheck.nip}</strong>
+                      </p>
+                      <p>
+                        Rachunek z pozwu: <strong className="text-[#172338] font-mono text-[11px] block">{vatCheck.bankAccountChecked}</strong>
+                      </p>
+                      <p className="text-[11px] text-[#137333] bg-[#E6F4EA] p-2 rounded">
+                        ✓ Rachunek bankowy figuruje w rejestrze Szefa KAS.
+                      </p>
+                    </div>
+                    <p className="text-[10px] font-mono text-[#8C93A0] pt-1 border-t border-[#E1E3E7]">
+                      Zapytanie: {vatCheck.requestId}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}

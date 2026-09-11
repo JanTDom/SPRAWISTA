@@ -6,6 +6,13 @@ import { Matter, Organization, User } from "../models/matter";
 import { CaseDocument, TimelineEvent, CaseIssue } from "../models/evidence";
 import { ProceduralDraft, PreSignAuditFinding, AdversarialCounterArgument } from "../models/pleading";
 
+import {
+  SignatureAuthorityCheck,
+  CaseLawPrecedent,
+  CommercialRecoveryCompensation,
+  VatStatusCheck,
+} from "../models/knowledge-sources";
+
 export interface MatterFullAggregate {
   readonly matter: Matter;
   readonly documents: readonly CaseDocument[];
@@ -15,6 +22,10 @@ export interface MatterFullAggregate {
   readonly draftHistory: readonly ProceduralDraft[];
   readonly auditFindings: readonly PreSignAuditFinding[];
   readonly counterArguments: readonly AdversarialCounterArgument[];
+  readonly signatureChecks?: readonly SignatureAuthorityCheck[];
+  readonly caseLawPrecedents?: readonly CaseLawPrecedent[];
+  readonly recoveryCompensation?: CommercialRecoveryCompensation;
+  readonly vatCheck?: VatStatusCheck;
 }
 
 export class AuthorizationError extends Error {

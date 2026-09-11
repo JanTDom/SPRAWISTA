@@ -9,6 +9,13 @@ import { Matter, Organization, User, Party } from "../models/matter";
 import { CaseDocument, TimelineEvent, CaseIssue, DocumentChunk } from "../models/evidence";
 import { ProceduralDraft, PreSignAuditFinding, AdversarialCounterArgument } from "../models/pleading";
 import { MatterFullAggregate } from "../repositories/matter-repository";
+import {
+  SignatureAuthorityCheck,
+  CaseLawPrecedent,
+  CommercialRecoveryCompensation,
+  VatStatusCheck,
+  RegistryEntityRecord,
+} from "../models/knowledge-sources";
 
 export const DEMO_ORGANIZATION: Organization = {
   id: "org-kancelaria-demo",
@@ -523,7 +530,8 @@ export const DEMO_PLEADING_DRAFT: ProceduralDraft = {
 
 1. **Zarzut braku wymagalności roszczenia powoda** z uwagi na niewykonanie warunku umownego w postaci sporządzenia bezusterkowego protokołu odbioru robót (§ 4 ust. 3 Umowy nr 12/2025) wskutek wystąpienia wad istotnych konstrukcji żelbetowej;
 2. **Zarzut bezzasadności powództwa co do kwoty 49 200,00 zł brutto** z uwagi na wcześniejsze wystawienie przez powoda faktury korygującej nr FK/2025/12/01 obniżającej dochodzone roszczenie;
-3. **Z ostrożności procesowej – zarzut nienależytego wykonania zobowiązania (art. 471 K.c.)** i prawo powstrzymania się ze spełnieniem świadczenia wzajemnego do czasu usunięcia wad istotnych (art. 488 § 2 K.c.).`,
+3. **Zarzut braku umocowania (art. 103 § 1 i 2 K.c.)** osoby podpisującej w imieniu powoda Aneks nr 1 do Umowy rozszerzający zakres rzeczowy, z uwagi na brak ujawnienia sygnatariusza Marka Wiśniewskiego w rejestrze KRS powoda;
+4. **Z ostrożności procesowej – zarzut nienależytego wykonania zobowiązania (art. 471 K.c.)** i prawo powstrzymania się ze spełnieniem świadczenia wzajemnego do czasu usunięcia wad istotnych (art. 488 § 2 K.c.).`,
       citations: [
         {
           id: "cit-1",
@@ -556,10 +564,14 @@ export const DEMO_PLEADING_DRAFT: ProceduralDraft = {
       orderIndex: 2,
       title: "II. STAN FAKTYCZNY I ROZWINIĘCIE ZARZUTÓW",
       contentMarkdown: `W dniu 15 lutego 2025 r. strony zawarły Umowę o roboty budowlane nr 12/2025. W § 4 ust. 3 Umowy strony jednoznacznie postanowiły, że wynagrodzenie Wykonawcy staje się wymagalne dopiero po podpisaniu bezusterkowego protokołu odbioru danego etapu.
-
+ 
 W toku czynności odbiorowych w dniu 30 listopada 2025 r. komisja z udziałem inspektora nadzoru inwestorskiego ujawniła wady istotne w postaci spękań płyty stropowej osi A-D przekraczających 0,4 mm oraz niedopuszczalne odchyłki pionowe słupów nośnych. Odmowa odbioru nastąpiła z przyczyn leżących wyłącznie po stronie Wykonawcy, który w korespondencji e-mail z dnia 5 grudnia 2025 r. bezpodstawnie odmówił wykonania prac naprawczych.
+ 
+Stanowisko pozwanej znajduje pełne oparcie w utrwalonym orzecznictwie Sądu Najwyższego. Jak wskazał Sąd Najwyższy w wyroku z dnia 26 lutego 1998 r. (sygn. akt I CKN 520/97) oraz w wyroku z dnia 22 czerwca 2007 r. (sygn. akt V CSK 99/07), inwestor jest w pełni uprawniony do odmowy odbioru obiektu budowlanego dotkniętego wadami istotnymi, a wystąpienie takich wad definitywnie wyłącza wymagalność roszczenia wykonawcy o zapłatę wynagrodzenia.
 
-Co więcej, powód w treści pozwu dochodzi kwoty 147 600,00 zł, zatajając przed Sądem fakt, że w dniu 18 grudnia 2025 r. wystawił i doręczył pozwanej Fakturę Korygującą nr FK/2025/12/01 na kwotę 49 200,00 zł. Dochodzenie roszczenia w pierwotnej wysokości stanowi nadużycie prawa procesowego.`,
+Co więcej, powód w treści pozwu dochodzi kwoty 147 600,00 zł, zatajając przed Sądem fakt, że w dniu 18 grudnia 2025 r. wystawił i doręczył pozwanej Fakturę Korygującą nr FK/2025/12/01 na kwotę 49 200,00 zł. Dochodzenie roszczenia w pierwotnej wysokości stanowi nadużycie prawa procesowego.
+
+Dodatkowo, z urzędowego odpisu KRS powoda wynika, iż Aneks nr 1 z dnia 10 sierpnia 2025 r. został podpisany przez pana Marka Wiśniewskiego, który w dacie czynności nie figurował w rejestrze KRS jako członek zarządu ani prokurent. Wobec braku przedłożenia pełnomocnictwa, czynność ta dotknięta jest sankcją bezskuteczności zawieszonej na podstawie art. 103 § 1 i 2 K.c. (por. uchwała SN z dnia 7 marca 2014 r., sygn. akt III CZP 111/13).`,
       citations: [
         {
           id: "cit-3",
@@ -644,7 +656,183 @@ export const DEMO_AUDIT_FINDINGS: readonly PreSignAuditFinding[] = [
     recommendedAction: "Nie zgłaszać formalnego zarzutu potrącenia w odpowiedzi na pozew; wytoczyć powództwo wzajemne lub żądać oddalenia powództwa z tytułu nienależytego wykonania umowy.",
     status: "ZAAKCEPTOWANA",
   },
+  {
+    id: "audit-5",
+    severity: "BLAD",
+    title: "Brak umocowania sygnatariusza Aneksu nr 1 w KRS powoda",
+    location: "Zarzuty (pkt 3) oraz Uzasadnienie",
+    description: "Sygnatariusz Aneksu nr 1 p. Marek Wiśniewski ('Dyrektor ds. Handlowych') nie figuruje w odpisie KRS powoda w zarządzie ani jako prokurent. W aktach brak pełnomocnictwa materialnego z datą pewną.",
+    legalBasisOrSource: "art. 103 § 1 K.c. w zw. z art. 17 ust. 1 ustawy o KRS",
+    recommendedAction: "Podnieść zarzut bezskuteczności zawieszonej Aneksu nr 1 z powodu działania rzekomego pełnomocnika (falsus procurator).",
+    status: "ZAAKCEPTOWANA",
+  },
 ];
+
+// Odpis KRS Powoda
+export const DEMO_KRS_CLAIMANT: RegistryEntityRecord = {
+  registryType: "KRS",
+  registrationNumber: "0000889901",
+  nip: "5252899012",
+  regon: "142987654",
+  legalForm: "Spółka z ograniczoną odpowiedzialnością",
+  companyName: "ABC Budownictwo Generalny Wykonawca Sp. z o.o.",
+  seatCity: "Warszawa",
+  address: "ul. Przemysłowa 12, 02-600 Warszawa",
+  representationRule:
+    "Do składania oświadczeń w imieniu spółki wymagane jest współdziałanie dwóch członków zarządu albo jednego członka zarządu łącznie z prokurentem.",
+  isActive: true,
+  isInBankruptcy: false,
+  isInRestructuring: false,
+  representatives: [
+    {
+      fullName: "Tomasz Adamski",
+      peselOrIdMasked: "820512*****",
+      role: "PREZES_ZARZADU",
+      appointedDate: "2020-03-15",
+    },
+    {
+      fullName: "Krzysztof Bieliński",
+      peselOrIdMasked: "850920*****",
+      role: "WICEPREZES_ZARZADU",
+      appointedDate: "2021-06-01",
+    },
+  ],
+  verifiedAt: "2026-09-01T10:00:00Z",
+};
+
+// Odpis KRS Pozwanej
+export const DEMO_KRS_DEFENDANT: RegistryEntityRecord = {
+  registryType: "KRS",
+  registrationNumber: "0000776655",
+  nip: "5272654321",
+  regon: "141234567",
+  legalForm: "Spółka Akcyjna",
+  companyName: "XYZ Developer S.A.",
+  seatCity: "Warszawa",
+  address: "Al. Jerozolimskie 100, 00-800 Warszawa",
+  representationRule: "Do składania oświadczeń w imieniu spółki uprawniony jest każdy członek zarządu samodzielnie lub prokurent.",
+  isActive: true,
+  isInBankruptcy: false,
+  isInRestructuring: false,
+  representatives: [
+    {
+      fullName: "Robert Lewandowski (Prezes)",
+      peselOrIdMasked: "781105*****",
+      role: "PREZES_ZARZADU",
+      appointedDate: "2018-01-10",
+    },
+  ],
+  verifiedAt: "2026-09-01T10:00:00Z",
+};
+
+// Wyniki weryfikacji umocowania podpisów na dokumentach sprawy
+export const DEMO_SIGNATURE_CHECKS: readonly SignatureAuthorityCheck[] = [
+  {
+    documentId: "doc-umowa",
+    documentTitle: "Umowa o roboty budowlane nr 12/2025 z dnia 15.02.2025 r.",
+    signatureDate: "2025-02-15",
+    signatoryName: "Tomasz Adamski oraz Krzysztof Bieliński",
+    purportedRole: "Prezes i Wiceprezes Zarządu",
+    isValidInRegistry: true,
+    violatesJointRepresentation: false,
+    findingSeverity: "ZGODNE",
+    findingDescription: "Umocowanie potwierdzone w KRS. Spełniony wymóg reprezentacji łącznej dwóch członków zarządu.",
+    legalBasis: "art. 205 § 1 K.s.h.",
+    proceduralRecommendation: "Brak zarzutów formalnych co do zawarcia umowy głównej.",
+  },
+  {
+    documentId: "doc-aneks",
+    documentTitle: "Aneks nr 1 do Umowy nr 12/2025 z dnia 10.08.2025 r.",
+    signatureDate: "2025-08-10",
+    signatoryName: "Marek Wiśniewski",
+    purportedRole: "Dyrektor ds. Handlowych",
+    isValidInRegistry: false,
+    violatesJointRepresentation: true,
+    findingSeverity: "WADA_BEZWZGLEDNA",
+    findingDescription: "Sygnatariusz Marek Wiśniewski nie figuruje w KRS powoda ani w zarządzie, ani jako prokurent. W aktach sprawy brak dokumentu pełnomocnictwa z datą pewną.",
+    legalBasis: "art. 103 § 1 i § 2 K.c. w zw. z art. 205 § 1 K.s.h.",
+    proceduralRecommendation: "Podnieść formalny zarzut braku umocowania (falsus procurator) oraz bezskuteczności postanowień Aneksu nr 1.",
+  },
+];
+
+// Sprawdzone orzecznictwo Sądu Najwyższego powiązane ze sprawą
+export const DEMO_CASE_LAW_PRECEDENTS: readonly CaseLawPrecedent[] = [
+  {
+    id: "sn-ic-ckn-520-97",
+    courtName: "Sąd Najwyższy",
+    division: "Izba Cywilna",
+    caseNumber: "I CKN 520/97",
+    judgmentDate: "1998-02-26",
+    judgmentType: "Wyrok",
+    thesis: "W sytuacji gdy wykonawca zgłasza zakończenie robót budowlanych, inwestor obowiązany jest dokonać ich odbioru. Odmowa odbioru robót jest uzasadniona jedynie wtedy, gdy obiekt wykazuje wady istotne, czyniące go niezdatnym do umówionego użytku lub sprzeciwiające się wyraźnej umowie stron.",
+    associatedIssues: ["Zarzut braku wymagalności z uwagi na brak odbioru", "Wady istotne konstrukcji"],
+    provenanceSource: "SN_OFFICIAL",
+    directLink: "http://www.sn.pl/orzecznictwo/SitePages/Baza_orzeczen.aspx?ItemSID=19808-1",
+  },
+  {
+    id: "sn-v-csk-99-07",
+    courtName: "Sąd Najwyższy",
+    division: "Izba Cywilna",
+    caseNumber: "V CSK 99/07",
+    judgmentDate: "2007-06-22",
+    judgmentType: "Wyrok",
+    thesis: "Strony umowy o roboty budowlane mogą uzależnić wymagalność wynagrodzenia końcowego od podpisania bezusterkowego protokołu odbioru, pod warunkiem że wady mają charakter istotny. Wystąpienie wad istotnych wyłącza wymagalność roszczenia o wynagrodzenie do czasu ich skutecznego usunięcia.",
+    associatedIssues: ["Zarzut braku wymagalności z uwagi na brak odbioru", "Warunek bezusterkowego odbioru"],
+    provenanceSource: "SN_OFFICIAL",
+    directLink: "http://www.sn.pl/orzecznictwo/SitePages/Baza_orzeczen.aspx?ItemSID=2409-5",
+  },
+  {
+    id: "sn-iii-czp-111-13",
+    courtName: "Sąd Najwyższy",
+    division: "Izba Cywilna",
+    caseNumber: "III CZP 111/13",
+    judgmentDate: "2014-03-07",
+    judgmentType: "Uchwała",
+    thesis: "Wykonawca robót budowlanych nie może żądać zapłaty wynagrodzenia za roboty dodatkowe bez uprzedniej zmiany umowy zawartej na piśmie pod rygorem nieważności, chyba że wykaże bezpodstawne wzbogacenie inwestora, z zastrzeżeniem prekluzji twierdzeń i dowodów.",
+    associatedIssues: ["Zarzut bezzasadności powyżej 98 400 zł", "Brak formy pisemnej aneksów"],
+    provenanceSource: "SN_OFFICIAL",
+    directLink: "http://www.sn.pl/orzecznictwo/SitePages/Baza_orzeczen.aspx?ItemSID=12301-3",
+  },
+  {
+    id: "sa-katowice-v-aca-440-18",
+    courtName: "Sąd Apelacyjny w Katowicach",
+    division: "V Wydział Cywilny",
+    caseNumber: "V ACa 440/18",
+    judgmentDate: "2019-02-14",
+    judgmentType: "Wyrok",
+    thesis: "W postępowaniu gospodarczym rygor prekluzji dowodowej z art. 458(5) K.p.c. nakłada na pozwanego obowiązek powołania wszystkich twierdzeń i dowodów już w odpowiedzi na pozew, pod rygorem ich pominięcia.",
+    associatedIssues: ["Prekluzja dowodowa w postępowaniu gospodarczym"],
+    provenanceSource: "SAOS_API",
+    directLink: "https://www.saos.org.pl/judgments/340912",
+  },
+];
+
+// Wyliczenie rekompensaty 70 EUR z ustawy o transakcjach handlowych
+export const DEMO_COMMERCIAL_COMPENSATION: CommercialRecoveryCompensation = {
+  invoiceValueGrosze: 14_760_000,
+  statutoryEuroTier: 70,
+  nbpRateUsed: {
+    currencyCode: "EUR",
+    tableNumber: "168/A/NBP/2026",
+    effectiveDate: "2026-08-31",
+    midRate: 4.3068,
+  },
+  calculatedPlnGrosze: 30148,
+  formattedPln: "301,48 zł",
+  legalBasis: "art. 10 ust. 1 pkt 2 ustawy z dnia 8 marca 2013 r. o przeciwdziałaniu nadmiernym opóźnieniom w transakcjach handlowych",
+};
+
+// Status na Białej Liście Podatników VAT
+export const DEMO_VAT_CHECK: VatStatusCheck = {
+  nip: "5252899012",
+  companyName: "ABC Budownictwo Generalny Wykonawca Sp. z o.o.",
+  isVatActive: true,
+  bankAccountChecked: "12 1050 0099 7654 3210 0001 2345",
+  isAccountOnWhitelist: true,
+  checkDate: "2026-09-01T09:30:00Z",
+  requestId: "KAS-WL-2026-0901-88129",
+  riskNote: "Rachunek bankowy widnieje w rejestrze Szefa KAS. Brak ryzyka solidarnej odpowiedzialności podatkowej (art. 117ba Ordynacji podatkowej).",
+};
 
 // Analiza przeciwna (Adversarial Review)
 export const DEMO_COUNTER_ARGUMENTS: readonly AdversarialCounterArgument[] = [
@@ -677,4 +865,8 @@ export const DEMO_AGGREGATE: MatterFullAggregate = {
   draftHistory: [DEMO_PLEADING_DRAFT],
   auditFindings: DEMO_AUDIT_FINDINGS,
   counterArguments: DEMO_COUNTER_ARGUMENTS,
+  signatureChecks: DEMO_SIGNATURE_CHECKS,
+  caseLawPrecedents: DEMO_CASE_LAW_PRECEDENTS,
+  recoveryCompensation: DEMO_COMMERCIAL_COMPENSATION,
+  vatCheck: DEMO_VAT_CHECK,
 };

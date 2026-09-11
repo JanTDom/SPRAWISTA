@@ -49,3 +49,12 @@ Dokument rejestruje rundy przeglądu wizualnego interfejsu Sprawisty oraz weryfi
 - **Weryfikacja**:
   - Kliknięcie przycisku `Umowa (str. 5) ↗` w uzasadnieniu zarzutu pisma powoduje natychmiastowe przestawienie prawej szpalty na `02_Umowa_o_roboty_budowlane_nr_12_2025.pdf`, podświetlenie fragmentu `chunk-umowa-par4` bursztynową ramką z odznaką `AKTYWNY CYTAT ↗` oraz wycentrowanie go w widoku.
   - Czas reakcji interfejsu poniżej 50 ms bez przeładowania strony.
+
+### Runda 5 — Wiarygodność Procesowa i Źródła Zewnętrzne (KRS / SN / NBP / KAS)
+- **Plik zrzutu**: `docs/quality/screenshots/05_knowledge_registers.png`
+- **Weryfikacja**:
+  - Zakładka `Rejestry i Prawo` w obszarze roboczym:
+    1. Weryfikacja reprezentacji KRS: wykrycie, że Aneks nr 1 podpisała osoba nieujawniona w rejestrze powoda (Marek Wiśniewski) — status `⚠ BRAK UMOCAWIANIA (ART. 103 K.C.)`.
+    2. Autentyczne orzecznictwo Sądu Najwyższego (wyroki I CKN 520/97, V CSK 99/07, uchwała III CZP 111/13) powiązane bezpośrednio z zarzutami wad istotnych i formy pisemnej pod rygorem nieważności.
+    3. Rekompensata NBP: wyliczenie 70 EUR wg Tabeli 168/A/NBP/2026 = 301,48 PLN.
+    4. Biała Lista VAT: weryfikacja statusu czynnego podatnika oraz zgodności rachunku bankowego z wykazem Szefa KAS.
