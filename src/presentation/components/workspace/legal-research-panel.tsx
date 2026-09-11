@@ -1,14 +1,14 @@
 "use client";
 /**
- * LegalResearchPanel — panel badania prawnego w zakładce Rejestry i Prawo.
+ * LegalResearchPanel — panel badania prawnego + asystent AI Gemini.
  *
- * Dostęp do:
- *  - całego prawa polskiego przez ISAP (katalog + wyszukiwanie + pełny tekst)
- *  - orzeczeń SN, TK, NSA, SA przez SAOS (200k+ orzeczeń)
- *  - prawa UE (katalog 20 dyrektyw / rozporządzeń)
- *  - orzeczeń TSUE (seed 12 wyroków + SPARQL fallback)
+ * Źródła:
+ *  - ISAP ELI API — pełny tekst każdego polskiego aktu
+ *  - SAOS API — 200k+ orzeczeń SN, TK, NSA, SA
+ *  - EUR-Lex SPARQL — dyrektywy UE i wyroki TSUE
+ *  - Gemini 2.5 Flash — analiza zapytań, ekstrakcja artykułów, asystent
  *
- * Serwer: /api/legal-research (route handler — bezpieczny, cache plikowy)
+ * AI: wyłącznie server-side (/api/legal-research POST). Klucz nigdy w przeglądarce.
  */
 import React, { useState, useCallback, useTransition, useRef } from "react";
 import type {
@@ -24,7 +24,7 @@ import type {
 // ──────────────────────────────────────────────────────────────────────────
 
 type SearchMode = "pl_acts" | "sn_civil" | "sn_labor" | "tk" | "nsa" | "eu" | "tsue" | "comprehensive";
-type ViewState = "catalog" | "search" | "act_text";
+type ViewState = "catalog" | "search" | "act_text" | "ai_assistant";
 
 interface CatalogData {
   statutes: StatuteCatalogEntry[];
@@ -32,8 +32,22 @@ interface CatalogData {
   cjeuJudgments: CjeuJudgment[];
 }
 
+interface AiAnalysisResult {
+  interpretation: string;
+  suggestedArticles: Array<{ actEli: string; actShortName: string; articles: string[] }>;
+  saosKeywords: string[];
+  relevantEuCelexIds: string[];
+  practicalSummary: string;
+}
+
+interface AiChatMessage {
+  role: "user" | "assistant";
+  content: string;
+  timestamp: string;
+}
+
 // ──────────────────────────────────────────────────────────────────────────
-// API helper
+// API helpers
 // ──────────────────────────────────────────────────────────────────────────
 
 async function legalApi<T>(action: string, params: Record<string, string> = {}): Promise<T> {
@@ -42,6 +56,20 @@ async function legalApi<T>(action: string, params: Record<string, string> = {}):
   if (!res.ok) throw new Error(`API ${res.status}`);
   return res.json() as Promise<T>;
 }
+
+async function legalAiPost<T>(action: string, body: Record<string, unknown> = {}): Promise<T> {
+  const res = await fetch("/api/legal-research", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action, ...body }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` })) as { error?: string };
+    throw new Error(err.error ?? `HTTP ${res.status}`);
+  }
+  return res.json() as Promise<T>;
+}
+
 
 // ──────────────────────────────────────────────────────────────────────────
 // Sub-components
@@ -289,18 +317,36 @@ export function LegalResearchPanel() {
 
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
           <span className="text-xs font-mono font-bold bg-[#EEF2FF] text-[#355CFF] px-2 py-0.5 rounded border border-[#C7D2FE]">
             Dostęp do całości prawa
           </span>
           <span className="text-xs font-mono text-[#5F6774]">
             ISAP ELI · SAOS (200k+ orzeczeń) · EUR-Lex · CURIA TSUE
           </span>
+          <span className="text-xs font-mono font-bold bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded border border-[#A5D6A7]">
+            ✦ Gemini 2.5 Flash
+          </span>
         </div>
-        <h2 className="text-2xl font-serif font-bold text-[#172338]">Badanie prawne</h2>
-        <p className="text-sm text-[#5F6774] mt-1">
-          Pełny dostęp do polskiego prawa, orzecznictwa SN/TK/NSA i prawa unijnego — na żywo z oficjalnych źródeł.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-serif font-bold text-[#172338]">Badanie prawne</h2>
+            <p className="text-sm text-[#5F6774] mt-1">
+              Pełny dostęp do polskiego prawa, orzecznictwa i prawa unijnego — z asystentem AI.
+            </p>
+          </div>
+          <button
+            onClick={() => setView(view === "ai_assistant" ? "catalog" : "ai_assistant")}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              view === "ai_assistant"
+                ? "bg-[#172338] text-white"
+                : "bg-[#F0FDF4] text-[#2E7D32] border border-[#A5D6A7] hover:bg-[#E8F5E9]"
+            }`}
+          >
+            <span>✦</span>
+            <span>Asystent AI</span>
+          </button>
+        </div>
       </div>
 
       {/* Search bar */}
@@ -402,6 +448,210 @@ export function LegalResearchPanel() {
       {/* Catalog view */}
       {view === "catalog" && !isPending && catalog && (
         <CatalogView catalog={catalog} onViewText={handleViewText} />
+      )}
+
+      {/* AI assistant */}
+      {view === "ai_assistant" && (
+        <AiAssistantView onBack={() => setView("catalog")} />
+      )}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// AiAssistantView — Gemini 2.5 Flash asystent prawny
+// ──────────────────────────────────────────────────────────────────────────
+
+function AiAssistantView({ onBack }: { onBack: () => void }) {
+  const [messages, setMessages] = useState<AiChatMessage[]>([
+    {
+      role: "assistant",
+      content: "Dzień dobry. Jestem asystentem badawczym opartym na Gemini 2.5 Flash. Pomagam w analizie przepisów, wyszukiwaniu właściwych artykułów i interpretacji orzecznictwa.\n\nMożesz zapytać o konkretny przepis, sygnaturę orzeczenia lub opisać problem prawny — wskażę gdzie szukać podstawy.\n\nNie udzielam porad prawnych — wspieram Twoją pracę badawczą.",
+      timestamp: new Date().toISOString(),
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isThinking, setIsThinking] = useState(false);
+  const [analysisMode, setAnalysisMode] = useState<"chat" | "analyze">("chat");
+  const [analysisResult, setAnalysisResult] = useState<AiAnalysisResult | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const QUICK_PROMPTS = [
+    "Jakie są przesłanki z art. 481 KC dla odsetek za opóźnienie?",
+    "Kiedy roszczenie z umowy o roboty budowlane ulega przedawnieniu?",
+    "Co to jest rekompensata 40 EUR z ustawy o transakcjach handlowych?",
+    "Jak działa zarzut braku legitymacji procesowej czynnej?",
+    "Jakie są skutki przekroczenia terminu na odpowiedź na pozew?",
+    "Kiedy zastosowanie ma dyrektywa 2011/7/UE zamiast polskiej UTH?",
+  ];
+
+  const sendMessage = async (text: string) => {
+    if (!text.trim() || isThinking) return;
+    const userMsg: AiChatMessage = { role: "user", content: text.trim(), timestamp: new Date().toISOString() };
+    setMessages((m) => [...m, userMsg]);
+    setInput("");
+    setIsThinking(true);
+    setAnalysisResult(null);
+
+    try {
+      if (analysisMode === "analyze") {
+        const result = await legalAiPost<AiAnalysisResult>("ai_analyze_query", { query: text.trim() });
+        setAnalysisResult(result);
+        setMessages((m) => [...m, {
+          role: "assistant",
+          content: `**Interpretacja:** ${result.interpretation}\n\n**Stan prawny:** ${result.practicalSummary}`,
+          timestamp: new Date().toISOString(),
+        }]);
+      } else {
+        const { answer } = await legalAiPost<{ answer: string }>("ai_chat", { question: text.trim() });
+        setMessages((m) => [...m, { role: "assistant", content: answer, timestamp: new Date().toISOString() }]);
+      }
+    } catch (err) {
+      setMessages((m) => [...m, {
+        role: "assistant",
+        content: `Błąd: ${err instanceof Error ? err.message : String(err)}`,
+        timestamp: new Date().toISOString(),
+      }]);
+    } finally {
+      setIsThinking(false);
+      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Nav bar */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-mono font-bold text-[#2E7D32] bg-[#F0FDF4] border border-[#A5D6A7] px-2 py-0.5 rounded">✦ Gemini 2.5 Flash</span>
+          <span className="text-xs text-[#5F6774] font-mono">Asystent badań prawnych</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex border border-[#E1E3E7] rounded-lg overflow-hidden text-[11px] font-mono">
+            {(["chat", "analyze"] as const).map((mode) => (
+              <button key={mode} onClick={() => setAnalysisMode(mode)}
+                className={`px-2.5 py-1 transition-colors ${analysisMode === mode ? "bg-[#172338] text-white" : "bg-white text-[#5F6774] hover:bg-[#FAF9F6]"}`}>
+                {mode === "chat" ? "Rozmowa" : "Analiza źródeł"}
+              </button>
+            ))}
+          </div>
+          <button onClick={onBack} className="text-xs text-[#5F6774] hover:text-[#172338] font-mono">← Katalog</button>
+        </div>
+      </div>
+
+      <div className="text-xs font-mono text-[#5F6774] bg-[#FAF9F6] border border-[#E1E3E7] rounded-lg px-3 py-2">
+        {analysisMode === "chat"
+          ? "Tryb rozmowy — zadaj pytanie prawne w języku naturalnym."
+          : "Tryb analizy — AI wskaże konkretne artykuły, frazy do SAOS i dyrektywy UE."}
+      </div>
+
+      {/* Chat */}
+      <div className="bg-white border border-[#E1E3E7] rounded-xl overflow-hidden">
+        <div className="h-[420px] overflow-y-auto p-4 space-y-4" aria-live="polite">
+          {messages.map((msg, i) => (
+            <div key={i} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+              <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${msg.role === "assistant" ? "bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]" : "bg-[#EEF2FF] text-[#355CFF] border border-[#C7D2FE]"}`}>
+                {msg.role === "assistant" ? "✦" : "P"}
+              </div>
+              <div className={`max-w-[85%] rounded-xl px-4 py-3 text-sm leading-relaxed ${msg.role === "user" ? "bg-[#EEF2FF] text-[#172338] rounded-tr-sm" : "bg-[#FAF9F6] text-[#172338] border border-[#E1E3E7] rounded-tl-sm"}`}>
+                <p className="whitespace-pre-wrap font-sans">{msg.content}</p>
+                <span className="text-[10px] text-[#8C93A0] font-mono mt-1 block">
+                  {new Date(msg.timestamp).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })}
+                </span>
+              </div>
+            </div>
+          ))}
+          {isThinking && (
+            <div className="flex gap-3">
+              <div className="shrink-0 w-7 h-7 rounded-full bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7] flex items-center justify-center text-xs font-bold">✦</div>
+              <div className="bg-[#FAF9F6] border border-[#E1E3E7] rounded-xl rounded-tl-sm px-4 py-3">
+                <div className="flex gap-1 items-center h-5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32] animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32] animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32] animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+        <div className="border-t border-[#E1E3E7] p-3 flex gap-2 bg-[#FAF9F6]">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(input); } }}
+            placeholder="Zapytaj o przepis, orzeczenie lub problem prawny… (Enter = wyślij)"
+            rows={2}
+            className="flex-1 text-sm bg-white border border-[#E1E3E7] rounded-lg px-3 py-2 text-[#172338] placeholder:text-[#8C93A0] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] resize-none"
+          />
+          <button
+            onClick={() => sendMessage(input)}
+            disabled={isThinking || !input.trim()}
+            className="px-4 py-2 bg-[#2E7D32] text-white text-sm font-semibold rounded-lg hover:bg-[#1B5E20] disabled:opacity-40 transition-colors self-end"
+          >
+            {isThinking ? "…" : "Wyślij"}
+          </button>
+        </div>
+      </div>
+
+      {/* Structured analysis result */}
+      {analysisResult && (
+        <div className="bg-white border border-[#E1E3E7] rounded-xl p-4 space-y-4">
+          <h4 className="font-serif font-bold text-[#172338]">Analiza źródeł prawa</h4>
+          {analysisResult.suggestedArticles.length > 0 && (
+            <div>
+              <p className="text-[11px] font-mono font-bold text-[#5F6774] uppercase tracking-wider mb-2">Sugerowane artykuły</p>
+              <div className="space-y-1.5">
+                {analysisResult.suggestedArticles.map((a, i) => (
+                  <div key={i} className="bg-[#FAF9F6] border border-[#E1E3E7] rounded-lg px-3 py-2">
+                    <span className="font-mono font-bold text-[#355CFF] text-xs">{a.actShortName}</span>
+                    <span className="mx-2 text-[#E1E3E7]">·</span>
+                    <span className="text-xs text-[#172338]">{a.articles.join(", ")}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {analysisResult.saosKeywords.length > 0 && (
+            <div>
+              <p className="text-[11px] font-mono font-bold text-[#5F6774] uppercase tracking-wider mb-2">Frazy do SAOS</p>
+              <div className="flex flex-wrap gap-1.5">
+                {analysisResult.saosKeywords.map((k, i) => (
+                  <span key={i} className="text-[11px] font-mono bg-[#EEF2FF] text-[#355CFF] border border-[#C7D2FE] px-2 py-0.5 rounded">{k}</span>
+                ))}
+              </div>
+            </div>
+          )}
+          {analysisResult.relevantEuCelexIds.length > 0 && (
+            <div>
+              <p className="text-[11px] font-mono font-bold text-[#5F6774] uppercase tracking-wider mb-2">Prawo UE</p>
+              <div className="flex flex-wrap gap-1.5">
+                {analysisResult.relevantEuCelexIds.map((c, i) => (
+                  <a key={i} href={`https://eur-lex.europa.eu/legal-content/PL/TXT/?uri=CELEX:${c}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="text-[11px] font-mono bg-[#F3E5F5] text-[#7B42CC] border border-[#CE93D8] px-2 py-0.5 rounded hover:underline">
+                    {c} ↗
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Quick prompts (when fresh) */}
+      {messages.length <= 1 && (
+        <div>
+          <p className="text-[11px] font-mono text-[#5F6774] mb-2 uppercase tracking-wider">Przykładowe pytania:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {QUICK_PROMPTS.map((p) => (
+              <button key={p} onClick={() => sendMessage(p)}
+                className="text-left text-xs text-[#172338] bg-[#FAF9F6] border border-[#E1E3E7] rounded-lg px-3 py-2.5 hover:border-[#2E7D32]/50 hover:bg-[#F0FDF4] transition-colors">
+                {p}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

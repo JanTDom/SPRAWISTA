@@ -1,5 +1,5 @@
 /**
- * Testy jednostkowe warstwy wiedzy prawnej.
+ * Testy jednostkowe warstwy wiedzy prawnej — czyste JS (bez TypeScript składni).
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -28,25 +28,25 @@ test("Każdy wpis katalogu ma ELI w formacie DU/RRRR/NR", () => {
 test("findInCatalog('KC') zwraca Kodeks cywilny", () => {
   const kc = findInCatalog("KC");
   assert.ok(kc, "Nie znaleziono KC");
-  assert.equal(kc!.eli, "DU/1964/93");
+  assert.equal(kc.eli, "DU/1964/93");
 });
 
 test("findInCatalog('KP') zwraca Kodeks pracy", () => {
   const kp = findInCatalog("KP");
   assert.ok(kp, "Nie znaleziono KP");
-  assert.equal(kp!.eli, "DU/1974/141");
+  assert.equal(kp.eli, "DU/1974/141");
 });
 
 test("findInCatalog('UTH') zwraca ustawę o transakcjach handlowych", () => {
   const uth = findInCatalog("UTH");
   assert.ok(uth, "Nie znaleziono UTH");
-  assert.ok(uth!.eli.includes("2013"), "UTH powinien być z 2013");
+  assert.ok(uth.eli.includes("2013"), "UTH powinien być z 2013");
 });
 
 test("findInCatalog('KSH') zwraca Kodeks spółek handlowych", () => {
   const ksh = findInCatalog("KSH");
   assert.ok(ksh, "Nie znaleziono KSH");
-  assert.ok(ksh!.eli.includes("2000"), "KSH powinien być z 2000");
+  assert.ok(ksh.eli.includes("2000"), "KSH powinien być z 2000");
 });
 
 test("getByLegalArea('PRAWO_PRACY') zawiera Kodeks pracy", () => {
@@ -66,8 +66,8 @@ test("getByLegalArea('PRAWO_PODATKOWE') zawiera VAT, CIT i Ordynację", () => {
 test("getByLegalArea('PRAWO_UPADLOSCIOWE') zawiera PU i PR", () => {
   const acts = getByLegalArea("PRAWO_UPADLOSCIOWE");
   const shortNames = acts.map((a) => a.shortName);
-  assert.ok(shortNames.includes("PU"), `Brak Prawa upadłościowego`);
-  assert.ok(shortNames.includes("PR"), `Brak Prawa restrukturyzacyjnego`);
+  assert.ok(shortNames.includes("PU"), "Brak Prawa upadłościowego");
+  assert.ok(shortNames.includes("PR"), "Brak Prawa restrukturyzacyjnego");
 });
 
 test("getByLegalArea('PRAWO_ZAMOWIEN') zawiera PZP", () => {
@@ -84,20 +84,20 @@ test("Katalog UE zawiera co najmniej 15 aktów", () => {
 test("Dyrektywa 2011/7/UE jest w katalogu i obowiązuje", () => {
   const d = EU_LAW_CATALOG.find((a) => a.celexId === "32011L0007");
   assert.ok(d, "Brak dyrektywy 2011/7/UE");
-  assert.equal(d!.isInForce, true);
-  assert.equal(d!.implementingPolishEli, "DU/2013/403");
+  assert.equal(d.isInForce, true);
+  assert.equal(d.implementingPolishEli, "DU/2013/403");
 });
 
 test("RODO (32016R0679) jest w katalogu z polskim aktem implementującym", () => {
   const rodo = EU_LAW_CATALOG.find((a) => a.celexId === "32016R0679");
   assert.ok(rodo, "Brak RODO");
-  assert.equal(rodo!.implementingPolishEli, "DU/2018/1000");
+  assert.equal(rodo.implementingPolishEli, "DU/2018/1000");
 });
 
 test("Bruksela I bis (32012R1215) jest w katalogu jako Rozporządzenie", () => {
   const brussels = EU_LAW_CATALOG.find((a) => a.celexId === "32012R1215");
   assert.ok(brussels, "Brak Brukseli I bis");
-  assert.equal(brussels!.type, "Rozporządzenie");
+  assert.equal(brussels.type, "Rozporządzenie");
 });
 
 test("Rzym I (32008R0593) i Rzym II (32007R0864) są w katalogu", () => {
@@ -115,7 +115,7 @@ test("Baza TSUE zawiera co najmniej 10 wyroków", () => {
   assert.ok(CJEU_JUDGMENT_CATALOG.length >= 10, `Tylko ${CJEU_JUDGMENT_CATALOG.length} wyroków TSUE`);
 });
 
-test("Każdy wyrok TSUE ma poprawne celexId, caseNumber i thesis >= 100 znaków", () => {
+test("Każdy wyrok TSUE ma poprawne pola i tezę >= 100 znaków", () => {
   for (const j of CJEU_JUDGMENT_CATALOG) {
     assert.ok(j.celexId.length > 5, `Zbyt krótki celexId: ${j.celexId}`);
     assert.ok(j.caseNumber.startsWith("C-"), `Nieprawidłowy numer sprawy: ${j.caseNumber}`);
@@ -124,15 +124,14 @@ test("Każdy wyrok TSUE ma poprawne celexId, caseNumber i thesis >= 100 znaków"
   }
 });
 
-test("Wyrok C-555/14 (rekompensata 40 EUR) jest powiązany z dyrektywą o opóźnieniach", () => {
+test("Wyrok C-555/14 jest powiązany z dyrektywą o opóźnieniach", () => {
   const j = CJEU_JUDGMENT_CATALOG.find((x) => x.caseNumber === "C-555/14");
   assert.ok(j, "Brak wyroku C-555/14");
-  assert.ok(j!.relatedDirectives.includes("32011L0007"), "Powinien być powiązany z 32011L0007");
+  assert.ok(j.relatedDirectives.includes("32011L0007"), "Powinien być powiązany z 32011L0007");
 });
 
 test("Wyrok C-306/06 (definicja transakcji handlowej) jest w bazie", () => {
-  const j = CJEU_JUDGMENT_CATALOG.find((x) => x.caseNumber === "C-306/06");
-  assert.ok(j, "Brak wyroku C-306/06");
+  assert.ok(CJEU_JUDGMENT_CATALOG.some((x) => x.caseNumber === "C-306/06"), "Brak wyroku C-306/06");
 });
 
 // ── Cache ─────────────────────────────────────────────────────────────────
@@ -141,10 +140,10 @@ test("Cache: set/get zwraca przechowane dane przed upłynięciem TTL", () => {
   const key = `test_cache_${Date.now()}`;
   const payload = { value: 42, label: "test-legal" };
   cacheSet(key, payload, 1);
-  const result = cacheGet<{ value: number; label: string }>(key);
+  const result = cacheGet(key);
   assert.ok(result, "Cache miss — dane powinny być dostępne");
-  assert.equal(result!.value, 42);
-  assert.equal(result!.label, "test-legal");
+  assert.equal(result.value, 42);
+  assert.equal(result.label, "test-legal");
   cacheInvalidate(key);
 });
 

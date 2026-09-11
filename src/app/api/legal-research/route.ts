@@ -1,11 +1,20 @@
 /**
  * Next.js Route Handler — Legal Research API
- * Serwer-side: operacje na cache i zewnętrznych API dzieją się tu.
- * Klient (WorkspaceShell) odpytuje ten endpoint przez fetch.
+ * GET: katalog, wyszukiwanie, metadane (bez AI)
+ * POST: zapytania AI (analiza, ekstrakcja artykułów, asystent chat)
+ *
+ * Klucz GEMINI_API_KEY nigdy nie trafia do klienta — wyłącznie server-side.
  */
 import { type NextRequest, NextResponse } from "next/server";
 import * as LRS from "@/domain/services/legal-research-service";
 import { cacheStats } from "@/infrastructure/cache/legal-knowledge-cache";
+import {
+  analyzeLegalQuery,
+  suggestLegalProvisions,
+  legalAssistantChat,
+  extractArticleFromActHtml,
+  summarizeJudgment,
+} from "@/infrastructure/external/gemini-client";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
@@ -136,5 +145,100 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+// ──────────────────────────────────────────────────────────────────────────
+// POST — AI endpoints (Gemini)
+// ──────────────────────────────────────────────────────────────────────────
+
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  let body: Record<string, unknown>;
+  try {
+    body = (await req.json()) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "Nieprawidłowy JSON" }, { status: 400 });
+  }
+
+  const action = String(body["action"] ?? "");
+
+  try {
+    switch (action) {
+
+      // ── Analiza zapytania w j. naturalnym ───────────────────────────────
+      case "ai_analyze_query": {
+        const query = String(body["query"] ?? "");
+        if (!query) return NextResponse.json({ error: "Brak query" }, { status: 400 });
+        const result = await analyzeLegalQuery(query);
+        return NextResponse.json(result);
+      }
+
+      // ── Ekstrakcja artykułu z pełnego tekstu aktu ───────────────────────
+      case "ai_extract_article": {
+        const eli = String(body["eli"] ?? "");
+        const articleQuery = String(body["articleQuery"] ?? "");
+        const actShortName = String(body["actShortName"] ?? "");
+        if (!eli || !articleQuery) {
+          return NextResponse.json({ error: "Brak eli lub articleQuery" }, { status: 400 });
+        }
+        const fullText = await LRS.getActFullText(eli);
+        if (!fullText) {
+          return NextResponse.json({ error: "Nie udało się pobrać tekstu aktu" }, { status: 404 });
+        }
+        const result = await extractArticleFromActHtml({
+          htmlText: fullText.htmlContent,
+          articleQuery,
+          actShortName,
+        });
+        return NextResponse.json({ ...result, eli, source: fullText.provenanceSource });
+      }
+
+      // ── Dopasowanie przepisów do faktów sprawy ──────────────────────────
+      case "ai_suggest_provisions": {
+        const matterDescription = String(body["matterDescription"] ?? "");
+        const claimType = String(body["claimType"] ?? "zapłata z umowy");
+        const contractDate = body["contractDate"] ? String(body["contractDate"]) : undefined;
+        const claimAmountPln = body["claimAmountPln"] ? Number(body["claimAmountPln"]) : undefined;
+        const keyFacts = Array.isArray(body["keyFacts"])
+          ? (body["keyFacts"] as string[]).map(String)
+          : [];
+        const result = await suggestLegalProvisions({
+          matterDescription,
+          claimType,
+          contractDate,
+          claimAmountPln,
+          keyFacts,
+        });
+        return NextResponse.json(result);
+      }
+
+      // ── Streszczenie wyroku ─────────────────────────────────────────────
+      case "ai_summarize_judgment": {
+        const fullText = String(body["fullText"] ?? "");
+        const caseNumber = String(body["caseNumber"] ?? "");
+        const courtName = String(body["courtName"] ?? "Sąd Najwyższy");
+        if (!fullText || !caseNumber) {
+          return NextResponse.json({ error: "Brak fullText lub caseNumber" }, { status: 400 });
+        }
+        const result = await summarizeJudgment({ fullText, caseNumber, courtName });
+        return NextResponse.json(result);
+      }
+
+      // ── Asystent badawczy (swobodny chat) ──────────────────────────────
+      case "ai_chat": {
+        const question = String(body["question"] ?? "");
+        const context = body["context"] ? String(body["context"]) : undefined;
+        if (!question) return NextResponse.json({ error: "Brak pytania" }, { status: 400 });
+        const answer = await legalAssistantChat({ question, context });
+        return NextResponse.json({ answer });
+      }
+
+      default:
+        return NextResponse.json({ error: `Nieznana akcja AI: ${action}` }, { status: 400 });
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    // Nie loguj szczegółów — mogą zawierać fragmenty tajnych danych
+    console.error("[legal-research AI]", message.slice(0, 200));
+    return NextResponse.json({ error: "Błąd serwisu AI. Spróbuj ponownie." }, { status: 500 });
   }
 }
