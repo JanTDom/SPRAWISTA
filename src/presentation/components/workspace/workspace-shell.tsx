@@ -565,14 +565,14 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-mono font-bold bg-[#EEF2FF] text-[#355CFF] px-2 py-0.5 rounded border border-[#C7D2FE]">
-                    ZGODNOŚĆ Z DANYMI PAŃSTWOWYMI
+                    Zgodność z danymi państwowymi
                   </span>
                   <span className="text-xs font-mono text-[#5F6774]">
                     Weryfikacja: KRS • Sąd Najwyższy • NBP • KAS
                   </span>
                 </div>
                 <h2 className="text-2xl font-serif font-bold text-[#172338]">
-                  Wiarygodność Procesowa i Źródła Zewnętrzne
+                  Wiarygodność procesowa i źródła zewnętrzne
                 </h2>
                 <p className="text-sm text-[#5F6774] mt-1">
                   Automatyczna kontrola reprezentacji stron, autentycznych precedensów orzeczniczych i kursów walutowych.
@@ -584,7 +584,7 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
                 <div className="flex items-center justify-between border-b border-[#E1E3E7] pb-3">
                   <div>
                     <h3 className="font-serif font-bold text-base text-[#172338]">
-                      1. Weryfikacja Umocowania i Reprezentacji Stron (KRS)
+                      1. Weryfikacja umocowania i reprezentacji stron (KRS)
                     </h3>
                     <p className="text-xs text-[#5F6774] mt-0.5">
                       Kontrola zgodności podpisów na umowach z rejestrem przedsiębiorców w datach czynności.
@@ -617,8 +617,8 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
                           }`}
                         >
                           {check.findingSeverity === "WADA_BEZWZGLEDNA"
-                            ? "⚠ BRAK UMOCAWIANIA (ART. 103 K.C.)"
-                            : "✓ ZGODNE Z KRS"}
+                            ? "⚠ Brak umocowania (art. 103 k.c.)"
+                            : "✓ Zgodne z KRS"}
                         </span>
                       </div>
                       <p className="text-[#5F6774] mb-2">
@@ -645,7 +645,7 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
                 <div className="flex items-center justify-between border-b border-[#E1E3E7] pb-3">
                   <div>
                     <h3 className="font-serif font-bold text-base text-[#172338]">
-                      2. Sprawdzone Orzecznictwo Sądu Najwyższego (Zero Halucynacji)
+                      2. Sprawdzone orzecznictwo Sądu Najwyższego (zero halucynacji)
                     </h3>
                     <p className="text-xs text-[#5F6774] mt-0.5">
                       Autentyczne sygnatury i tezy powiązane bezpośrednio z linią obrony w niniejszej sprawie.
@@ -719,7 +719,7 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
                         3. Rekompensata NBP ({recoveryCompensation.statutoryEuroTier} EUR)
                       </h4>
                       <span className="text-[10px] font-mono bg-[#EEF2FF] text-[#355CFF] px-2 py-0.5 rounded font-bold">
-                        Oficjalna Tabela A
+                        Oficjalna tabela A
                       </span>
                     </div>
                     <div className="space-y-1.5 text-xs text-[#5F6774]">
@@ -748,7 +748,7 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
                   <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-5 shadow-sm space-y-3">
                     <div className="flex items-center justify-between border-b border-[#E1E3E7] pb-2">
                       <h4 className="font-serif font-bold text-sm text-[#172338]">
-                        4. Biała Lista Podatników VAT (KAS)
+                        4. Biała lista podatników VAT (KAS)
                       </h4>
                       <span className="text-[10px] font-mono bg-[#E6F4EA] text-[#137333] px-2 py-0.5 rounded font-bold">
                         ✓ Aktywny VAT
