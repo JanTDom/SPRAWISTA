@@ -12,6 +12,15 @@ import {
 } from "@/infrastructure/persistence/matter-store";
 import { MatterFullAggregate } from "@/domain/repositories/matter-repository";
 
+const PROCEDURE_LABELS: Record<MatterProcedure, string> = {
+  CYWILNE_ZWYKLE: "Cywilne (K.p.c.)",
+  GOSPODARCZE: "Gospodarcze (K.p.c.)",
+  KARNE: "Karne (K.p.k. / K.k.)",
+  PRACY_I_UBEZPIECZEN: "Pracy i ubezpieczeń (K.p.)",
+  ADMINISTRACYJNE: "Administracyjne (WSA/NSA)",
+  RODZINNE: "Rodzinne (K.r.o.)",
+};
+
 export function MattersDashboard() {
   const router = useRouter();
   const [matters, setMatters] = useState<MatterFullAggregate[]>([]);
@@ -170,7 +179,7 @@ export function MattersDashboard() {
                         {m.courtDepartment}
                       </span>
                       <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-[#EEF2FF] text-[#355CFF]">
-                        {m.procedure}
+                        {PROCEDURE_LABELS[m.procedure] || m.procedure}
                       </span>
                       <span className="text-[11px] font-mono text-[#5F6774]">
                         Dokumenty w aktach: {agg.documents?.length || 0}
@@ -230,13 +239,13 @@ export function MattersDashboard() {
             <form onSubmit={handleCreateMatter} className="space-y-4 text-xs font-sans">
               <div>
                 <label className="block font-semibold text-[#172338] mb-1">
-                  Sygnatura akt (np. I C 452/26, VII GC 120/26)
+                  Sygnatura akt (np. I C 452/26, II K 84/26, IV P 32/26, VII GC 120/26)
                 </label>
                 <input
                   type="text"
                   value={caseNumber}
                   onChange={(e) => setCaseNumber(e.target.value)}
-                  placeholder="np. I C 120/26"
+                  placeholder="np. I C 120/26, II K 84/26, IV P 32/26"
                   required
                   className="w-full border border-[#E1E3E7] rounded-lg p-2.5 text-xs focus:border-[#355CFF] focus:outline-none"
                 />
@@ -326,15 +335,19 @@ export function MattersDashboard() {
                 </div>
                 <div>
                   <label className="block font-semibold text-[#172338] mb-1">
-                    Tryb postępowania
+                    Tryb postępowania / dziedzina
                   </label>
                   <select
                     value={procedure}
                     onChange={(e) => setProcedure(e.target.value as MatterProcedure)}
                     className="w-full border border-[#E1E3E7] rounded-lg p-2 text-xs focus:border-[#355CFF] focus:outline-none bg-white"
                   >
-                    <option value="CYWILNE_ZWYKLE">Zwykłe (proces cywilny)</option>
+                    <option value="CYWILNE_ZWYKLE">Cywilne — proces zwykły (K.p.c.)</option>
                     <option value="GOSPODARCZE">Gospodarcze (Dział IVa K.p.c.)</option>
+                    <option value="KARNE">Karne (K.p.k. / K.k. / K.k.s.)</option>
+                    <option value="PRACY_I_UBEZPIECZEN">Prawo pracy i ubezpieczeń (K.p.)</option>
+                    <option value="ADMINISTRACYJNE">Administracyjne i sądowoadministracyjne (K.p.a. / P.p.s.a.)</option>
+                    <option value="RODZINNE">Rodzinne i opiekuńcze (K.r.o.)</option>
                   </select>
                 </div>
               </div>

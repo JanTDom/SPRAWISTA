@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/presentation/components/navigation/site-header";
 import { SiteFooter } from "@/presentation/components/navigation/site-footer";
 import { SentenceToProofInteractive } from "@/presentation/components/marketing/sentence-to-proof-interactive";
+import { QuantumStrategyInteractive } from "@/presentation/components/marketing/quantum-strategy-interactive";
 
 export default function HomePage() {
   return (
@@ -17,7 +18,7 @@ export default function HomePage() {
               <div className="lg:col-span-6 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E1E3E7] text-xs font-mono text-[#5F6774]">
                   <span className="w-2 h-2 rounded-full bg-[#355CFF]"></span>
-                  Postępowanie cywilne i gospodarcze • K.p.c.
+                  Sprawy cywilne • karne • gospodarcze • pracy • administracyjne
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-[#172338] tracking-tight leading-[1.12]">
@@ -26,7 +27,7 @@ export default function HomePage() {
                 </h1>
 
                 <p className="text-lg sm:text-xl text-[#5F6774] font-sans leading-relaxed max-w-xl">
-                  Sprawista pomaga przygotować odpowiedź na pozew na podstawie dokumentów sprawy.
+                  Sprawista pomaga przygotować odpowiedź na pozew, odpowiedź na akt oskarżenia i pisma procesowe na podstawie dokumentów sprawy.
                   Porządkuje argumenty, wskazuje ich źródła i pokazuje, co wymaga sprawdzenia.
                 </p>
 
@@ -54,6 +55,9 @@ export default function HomePage() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <strong className="text-[#172338]">Eksport DOCX</strong> gotowy do sądu
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <strong className="text-[#172338]">Silnik YourQuantum™</strong> koalicja zarzutów bez zgadywania AI
                   </span>
                   <span className="flex items-center gap-1.5">
                     <strong className="text-[#172338]">Prawnik</strong> decyduje i zatwierdza
@@ -164,6 +168,69 @@ export default function HomePage() {
                 <div className="mt-6 pt-4 border-t border-[#E1E3E7] text-xs font-mono text-[#5F6774]">
                   Prawdziwy DOCX, bez błędów XML
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 2.5: KWANTOWA OPTYMALIZACJA ZAMIAST ZGADYWANIA AI */}
+        <section className="py-20 bg-[#FAF9F6] border-b border-[#E1E3E7]" id="metoda-kwantowa">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mb-12">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E1E3E7] text-xs font-mono text-[#355CFF] mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#355CFF]"></span>
+                Twarda matematyka zamiast iluzji LLM • Dedykowany silnik YourQuantum™
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#172338] mt-1 mb-4">
+                Kwantowa optymalizacja koalicji zarzutów. <br className="hidden sm:inline" />
+                <span className="text-[#355CFF] italic font-normal">Koniec ze zgadywaniem AI.</span>
+              </h2>
+              <p className="text-base sm:text-lg text-[#5F6774] leading-relaxed">
+                W sądzie — czy to w procesie cywilnym, gospodarczym, karnym czy z zakresu prawa pracy — strategia obrony to nie jest dowolny esej literacki. 
+                To rygorystyczny problem kombinatoryczny: w procesie cywilnym podniesienie zarzutu potrącenia przy kwestionowaniu istnienia umowy może zostać uznane za dorozumiane uznanie długu. W procesie karnym sprzeczne zarzuty apelacyjne obalają się wzajemnie. 
+                Zwykłe modele językowe (ChatGPT, Copilot) zgadują prawdopodobne słowa i mieszają wykluczające się wnioski. Sprawista rozwiązuje przestrzeń zarzutów deterministycznym silnikiem kwantowo-hybrydowym YourQuantum.
+              </p>
+            </div>
+
+            {/* Interaktywny Widget YourQuantum vs Zwykłe AI */}
+            <QuantumStrategyInteractive />
+
+            {/* Trzy filary metody kwantowej */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+              <div className="bg-[#FFFFFF] border border-[#E1E3E7] p-6 rounded-xl shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-[#E8EEFF] text-[#355CFF] flex items-center justify-center font-mono font-bold text-sm mb-4">
+                  01
+                </div>
+                <h3 className="font-serif font-bold text-lg text-[#172338] mb-2">
+                  Eliminacja kolizji K.p.c., K.p.k. i K.c.
+                </h3>
+                <p className="text-sm text-[#5F6774] leading-relaxed">
+                  Silnik YourQuantum mapuje wzajemne wykluczenia prawne w modelu QUBO/Isinga. Algorytm pilnuje, by zarzuty wzajemnie kolidujące były bezwzględnie sformułowane jako ewentualne — <em>„z ostrożności procesowej”</em> — lub odrzucone z pism.
+                </p>
+              </div>
+
+              <div className="bg-[#FFFFFF] border border-[#E1E3E7] p-6 rounded-xl shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-[#E6F4EA] text-[#137333] flex items-center justify-center font-mono font-bold text-sm mb-4">
+                  02
+                </div>
+                <h3 className="font-serif font-bold text-lg text-[#172338] mb-2">
+                  Certyfikat SHA-256 i zero losowości
+                </h3>
+                <p className="text-sm text-[#5F6774] leading-relaxed">
+                  Zwykłe AI z każdym zapytaniem zwraca inny zestaw argumentów przez losową temperaturę modelu (&gt; 0). Solver kwantowy generuje stały, deterministyczny paszport kryptograficzny SHA-256 potwierdzający matematyczną spójność wyliczonego rozwiązania.
+                </p>
+              </div>
+
+              <div className="bg-[#FFFFFF] border border-[#E1E3E7] p-6 rounded-xl shadow-sm">
+                <div className="w-9 h-9 rounded-lg bg-[#FAF9F6] border border-[#E1E3E7] text-[#172338] flex items-center justify-center font-mono font-bold text-sm mb-4">
+                  03
+                </div>
+                <h3 className="font-serif font-bold text-lg text-[#172338] mb-2">
+                  Wskaźnik Odporności (Robustness Score)
+                </h3>
+                <p className="text-sm text-[#5F6774] leading-relaxed">
+                  Każda rekomendowana koalicja zarzutów otrzymuje obiektywną ocenę odporności na ripostę przeciwnika procesowego (0–100%), wyliczaną na podstawie siły powiązanych dowodów oraz orzecznictwa Sądu Najwyższego.
+                </p>
               </div>
             </div>
           </div>
@@ -380,7 +447,11 @@ export default function HomePage() {
               <ul className="space-y-3.5 mb-8 text-sm text-[#172338]">
                 <li className="flex items-center gap-3">
                   <span className="text-[#355CFF] font-bold">✓</span>
-                  Nieograniczone tworzenie spraw i wersji odpowiedzi na pozew
+                  Nieograniczone tworzenie spraw i pism procesowych (cywilne, karne, gospodarcze, pracy)
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-[#355CFF] font-bold">✓</span>
+                  Kwantowa optymalizacja koalicji zarzutów YourQuantum™ (QUBO / SHA-256)
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-[#355CFF] font-bold">✓</span>
@@ -388,11 +459,11 @@ export default function HomePage() {
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-[#355CFF] font-bold">✓</span>
-                  Pełna integracja z polskim ELI API (baza aktów prawnych)
+                  Pełna integracja z polskim ELI API (baza aktów prawnych Sejmu RP)
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-[#355CFF] font-bold">✓</span>
-                  Symulacja riposty powoda (Adversarial Review) i audyt „Przed podpisem”
+                  Symulacja riposty przeciwnika (Adversarial Review) i audyt „Przed podpisem”
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-[#355CFF] font-bold">✓</span>
@@ -427,6 +498,27 @@ export default function HomePage() {
             </h2>
 
             <div className="space-y-6">
+              <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-6 shadow-sm">
+                <h3 className="font-serif font-bold text-lg text-[#172338] mb-2">
+                  Jakie kategorie spraw i postępowań obsługuje Sprawista?
+                </h3>
+                <p className="text-sm text-[#5F6774] leading-relaxed font-sans">
+                  Sprawista obsługuje pełne spektrum postępowań prowadzonych przez polskie kancelarie: <strong>sprawy cywilne (K.p.c.)</strong>, <strong>gospodarcze (Dział IVa K.p.c.)</strong>, <strong>karne (K.p.k., K.k., K.k.s.)</strong>, <strong>z zakresu prawa pracy i ubezpieczeń społecznych (K.p.)</strong>, <strong>administracyjne i sądowoadministracyjne (K.p.a., P.p.s.a.)</strong> oraz <strong>rodzinne (K.r.o.)</strong>.
+                  Dla każdej dziedziny system uwzględnia właściwe rygory dowodowe, prekluzje procesowe i specyfikę pism procesowych.
+                </p>
+              </div>
+
+              <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-6 shadow-sm">
+                <h3 className="font-serif font-bold text-lg text-[#172338] mb-2">
+                  Na czym polega metoda kwantowa YourQuantum i czym różni się od ChatGPT?
+                </h3>
+                <p className="text-sm text-[#5F6774] leading-relaxed font-sans">
+                  Standardowe duże modele językowe (LLM, np. ChatGPT czy Copilot) działają probabilistycznie — generują słowa statystycznie najbardziej prawdopodobne. Nie rozumieją logiki formalnej ani skutków procesowych podniesienia zarzutu. Często łączą zarzuty wzajemnie wykluczające się (np. zarzut nieistnienia umowy z zarzutem potrącenia), co w procesie cywilnym może zostać potraktowane przez sąd jako dorozumiane uznanie długu powoda.
+                  <br /><br />
+                  Sprawista wykorzystuje silnik optymalizacji kwantowo-hybrydowej <strong>YourQuantum™</strong> (modele QUBO / Ising / Hybrid Benders). Algorytm bada przestrzeń koalicji zarzutów, matematycznie eliminuje sprzeczności, separuje zarzuty główne od ewentualnych (zgłaszanych wyłącznie z ostrożności procesowej) i generuje deterministyczny paszport kryptograficzny SHA-256. Prawnik otrzymuje sprawdzoną, niesprzeczną linię obrony, a nie losowy szkic chatbota.
+                </p>
+              </div>
+
               <div className="bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl p-6 shadow-sm">
                 <h3 className="font-serif font-bold text-lg text-[#172338] mb-2">
                   Czy Sprawista zastępuje prawnika?

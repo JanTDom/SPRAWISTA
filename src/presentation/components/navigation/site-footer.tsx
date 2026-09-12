@@ -84,7 +84,7 @@ export function SiteFooter() {
           <p>© 2026 Sprawista. Wszelkie prawa zastrzeżone.</p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             <span>Standard Editorial Precision</span>
-            <span>Postępowanie cywilne i gospodarcze (K.p.c.)</span>
+            <span>Sprawy cywilne, karne, gospodarcze, pracy i administracyjne</span>
           </div>
         </div>
       </div>

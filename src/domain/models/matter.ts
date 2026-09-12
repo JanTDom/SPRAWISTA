@@ -35,7 +35,13 @@ export interface Party {
   readonly representative?: string; // np. r.pr. Jan Kowalski
 }
 
-export type MatterProcedure = "GOSPODARCZE" | "CYWILNE_ZWYKLE";
+export type MatterProcedure =
+  | "CYWILNE_ZWYKLE"
+  | "GOSPODARCZE"
+  | "KARNE"
+  | "PRACY_I_UBEZPIECZEN"
+  | "ADMINISTRACYJNE"
+  | "RODZINNE";
 
 export interface Matter {
   readonly id: string;
