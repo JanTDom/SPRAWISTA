@@ -59,11 +59,11 @@ export function SentenceToProofInteractive() {
   return (
     <div className="w-full bg-[#FFFFFF] border border-[#E1E3E7] rounded-xl shadow-paper overflow-hidden">
       {/* Header Bar */}
-      <div className="bg-[#FAF9F6] border-b border-[#E1E3E7] px-6 py-3 flex items-center justify-between">
+      <div className="bg-[#FAF9F6] border-b border-[#E1E3E7] px-4 sm:px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-[#355CFF]"></span>
-          <span className="text-xs font-mono font-semibold uppercase text-[#172338] tracking-wider">
-            Interakcja Marki: Od Zdania do Dowodu
+          <span className="text-xs font-mono font-semibold uppercase text-[#172338] tracking-wider truncate">
+            Od Zdania do Dowodu
           </span>
         </div>
         <span className="text-xs font-sans text-[#5F6774] hidden sm:inline">
@@ -73,7 +73,7 @@ export function SentenceToProofInteractive() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[380px]">
         {/* LEWA SZPALTA: Projekt Pisma */}
-        <div className="lg:col-span-7 p-6 border-b lg:border-b-0 lg:border-r border-[#E1E3E7] bg-[#FFFFFF]">
+        <div className="lg:col-span-7 p-4 sm:p-6 border-b lg:border-b-0 lg:border-r border-[#E1E3E7] bg-[#FFFFFF]">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-mono text-[#5F6774]">PROJEKT ODPOWIEDZI NA POZEW (K.p.c.)</span>
             <span className="text-xs font-mono text-[#355CFF]">Sygn. akt XVI GC 1420/26</span>
@@ -120,7 +120,7 @@ export function SentenceToProofInteractive() {
         </div>
 
         {/* PRAWA SZPALTA: Wgląd w Akta i Zaznaczony Dowód */}
-        <div className="lg:col-span-5 p-6 bg-[#F6F5F1]/60 flex flex-col justify-between">
+        <div className="lg:col-span-5 p-4 sm:p-6 bg-[#F6F5F1]/60 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4 pb-2 border-b border-[#E1E3E7]">
               <span className="text-xs font-mono text-[#5F6774]">PODGLĄD DOWODU Z AKT</span>

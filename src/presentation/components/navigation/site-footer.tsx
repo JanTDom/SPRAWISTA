@@ -24,7 +24,7 @@ export function SiteFooter() {
             <ul className="space-y-2 text-sm text-[#5F6774]">
               <li>
                 <Link href="/demo" className="hover:text-[#172338] transition-colors">
-                  Syntetyczne Demo
+                  Warsztat roboczy
                 </Link>
               </li>
               <li>
@@ -80,9 +80,9 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-[#E1E3E7] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5F6774]">
+        <div className="pt-8 border-t border-[#E1E3E7] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5F6774] text-center sm:text-left">
           <p>© 2026 Sprawista. Wszelkie prawa zastrzeżone.</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             <span>Standard Editorial Precision</span>
             <span>Postępowanie cywilne i gospodarcze (K.p.c.)</span>
           </div>

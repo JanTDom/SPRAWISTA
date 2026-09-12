@@ -1,18 +1,23 @@
-import { defaultMatterRepository } from "@/domain/repositories/in-memory-matter-repository";
+import { createCleanMatterAggregate } from "@/infrastructure/persistence/matter-store";
 import { WorkspaceShell } from "@/presentation/components/workspace/workspace-shell";
 
 export const metadata = {
-  title: "Interaktywne Demo — Sprawista",
-  description: "Przetestuj pełny proces od akt do gotowego pisma procesowego na syntetycznej sprawie budowlanej.",
+  title: "Warsztat Roboczy — Sprawista",
+  description: "Czysty warsztat przygotowania odpowiedzi na pozew na realnych dokumentach sprawy.",
 };
 
 export default async function DemoPage() {
-  // Pobranie syntetycznej sprawy demonstracyjnej
-  const aggregate = await defaultMatterRepository.getMatterAggregate(
-    "matter-abc-vs-xyz",
-    "user-radca-adam",
-    "org-kancelaria-demo"
-  );
+  // Przygotowanie czystego agregatu roboczego bez syntetycznych pism
+  const cleanAggregate = createCleanMatterAggregate({
+    caseNumber: "I C 101/26",
+    courtName: "Sąd Rejonowy dla m.st. Warszawy",
+    courtDepartment: "I Wydział Cywilny",
+    title: "Nowa sprawa o zapłatę",
+    procedure: "GOSPODARCZE",
+    claimAmountPLN: 50000,
+    claimantName: "Strona Powodowa",
+    defendantName: "Strona Pozwana (Mocodawca)",
+  });
 
-  return <WorkspaceShell aggregate={aggregate} isDemo={true} />;
+  return <WorkspaceShell aggregate={cleanAggregate} isDemo={true} />;
 }
