@@ -66,6 +66,32 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
   const [aiInsightLoading, setAiInsightLoading] = useState(false);
   const [aiInsightResult, setAiInsightResult] = useState<string | null>(null);
 
+  // Stan silnika kwantowej optymalizacji strategii YourQuantum
+  const [quantumResult, setQuantumResult] = useState<any | null>(null);
+  const [isQuantumLoading, setIsQuantumLoading] = useState(false);
+
+  const handleRunQuantumOptimization = async () => {
+    if (issues.length === 0) {
+      alert("Dodaj przynajmniej jeden zarzut do mapy sporu, aby uruchomić kwantową optymalizację strategii.");
+      return;
+    }
+    setIsQuantumLoading(true);
+    try {
+      const res = await fetch("/api/quantum-strategy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matter, issues }),
+      });
+      if (!res.ok) throw new Error("Błąd silnika YourQuantum");
+      const data = await res.json();
+      setQuantumResult(data);
+    } catch (err) {
+      alert("Nie udało się pobrać wyniku optymalizacji kwantowej. Sprawdź połączenie.");
+    } finally {
+      setIsQuantumLoading(false);
+    }
+  };
+
   // Stan zapisu i eksportu
   const [saveStatus, setSaveStatus] = useState<"SAVED" | "MODIFIED">("SAVED");
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
@@ -725,20 +751,110 @@ export function WorkspaceShell({ aggregate, isDemo = false }: WorkspaceShellProp
           {/* WIDOK 3: MAPA SPORU I ZARZUTÓW */}
           {activeTab === "MAPA_SPORU" && (
             <div className="max-w-4xl mx-auto w-full space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h2 className="text-xl font-serif font-bold text-[#172338]">Mapa Sporu i Zarzutów</h2>
                   <p className="text-xs text-[#5F6774]">
                     Zestawienie zarzutów pozwanego, ich kwalifikacja prawna i podstawa dowodowa.
                   </p>
                 </div>
-                <button
-                  onClick={() => setIsIssueModalOpen(true)}
-                  className="bg-[#172338] hover:bg-[#355CFF] text-white text-xs font-semibold px-3 py-2 rounded-md shadow-sm transition-colors"
-                >
-                  + Nowy zarzut
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleRunQuantumOptimization}
+                    disabled={isQuantumLoading || issues.length === 0}
+                    className="bg-[#355CFF] hover:bg-[#2849D9] disabled:bg-[#C7D2FE] text-white text-xs font-semibold px-3 py-2 rounded-md shadow-sm transition-all flex items-center gap-1.5"
+                    title="Uruchom kwantową optymalizację koalicji zarzutów (YourQuantum)"
+                  >
+                    <span>⚛️</span>
+                    <span>{isQuantumLoading ? "Obliczanie QUBO..." : "Kwantowa optymalizacja"}</span>
+                  </button>
+                  <button
+                    onClick={() => setIsIssueModalOpen(true)}
+                    className="bg-[#172338] hover:bg-[#355CFF] text-white text-xs font-semibold px-3 py-2 rounded-md shadow-sm transition-colors"
+                  >
+                    + Nowy zarzut
+                  </button>
+                </div>
               </div>
+
+              {/* Panel Wyniku Kwantowej Optymalizacji YourQuantum */}
+              {quantumResult && (
+                <div className="bg-[#FAF9F6] border-2 border-[#355CFF] rounded-xl p-5 shadow-paper space-y-4 animate-in fade-in">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#E1E3E7]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">⚛️</span>
+                      <div>
+                        <h3 className="text-sm font-serif font-bold text-[#172338]">
+                          Kwantowa Optymalizacja Linii Obrony (YourQuantum)
+                        </h3>
+                        <p className="text-[11px] font-mono text-[#5F6774]">
+                          Solver: {quantumResult.solverUsed} • Czas: {quantumResult.computeTimeMs} ms • Model QUBO / Benders
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono font-bold bg-[#E6F4EA] text-[#137333] px-2.5 py-1 rounded-full border border-[#CEEAD6]">
+                        Odporność: {quantumResult.robustnessScore}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[#172338] leading-relaxed font-sans">
+                    {quantumResult.strategicSummaryPl}
+                  </p>
+
+                  {/* Rekomendacje dla poszczególnych zarzutów */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {quantumResult.detailedRecommendations.map((rec: any) => (
+                      <div
+                        key={rec.issueId}
+                        className={`p-3 rounded-lg border text-xs space-y-1 ${
+                          rec.tacticalRole === "GLOWNY"
+                            ? "bg-[#FFFFFF] border-[#355CFF] shadow-sm"
+                            : rec.tacticalRole === "EWENTUALNY_Z_OSTROZNOSCI"
+                            ? "bg-[#FEF7E0] border-[#F5E0A0]"
+                            : "bg-[#FAF9F6] border-[#E1E3E7] opacity-80"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-[#172338] truncate">{rec.title}</span>
+                          <span
+                            className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                              rec.tacticalRole === "GLOWNY"
+                                ? "bg-[#355CFF] text-[#FFFFFF]"
+                                : rec.tacticalRole === "EWENTUALNY_Z_OSTROZNOSCI"
+                                ? "bg-[#B06000] text-[#FFFFFF]"
+                                : "bg-[#8C93A0] text-[#FFFFFF]"
+                            }`}
+                          >
+                            {rec.tacticalRole === "GLOWNY"
+                              ? "Zarzut Główny"
+                              : rec.tacticalRole === "EWENTUALNY_Z_OSTROZNOSCI"
+                              ? "Z Ostrożności"
+                              : "Odradzany"}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#5F6774] leading-relaxed">{rec.explanation}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-[#E1E3E7] text-[11px] font-mono">
+                    <span className="text-[#8C93A0] truncate max-w-xs sm:max-w-md">
+                      Paszport SHA-256: {quantumResult.sha256Passport.slice(0, 24)}...
+                    </span>
+                    <button
+                      onClick={() => {
+                        alert("Hierarchia zarzutów została uwzględniona w projekcie odpowiedzi na pozew.");
+                        setActiveTab("PISMO");
+                      }}
+                      className="text-[#355CFF] hover:underline font-bold"
+                    >
+                      Przejdź do pisma procesowego →
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {issues.length === 0 ? (
                 <div className="bg-white border border-[#E1E3E7] rounded-xl p-8 text-center space-y-3">
