@@ -1,7 +1,7 @@
 # PROJECT_STATE.md — Stan Projektu SPRAWISTA
 
 **Ostatnia aktualizacja**: 2026-09-12  
-**Status fazy**: Praca na Realnych Dokumentach & Pełna Responsywność Mobile (Editorial Precision) — Zakończona Pełnym Sukcesem
+**Status fazy**: Integracja Silnika Kwantowo-Hybrydowego YourQuantum & Optymalizacja Strategii Procesowej — Zakończona Pełnym Sukcesem
 
 ---
 
@@ -15,40 +15,37 @@
   - `*.sprawista.pl` -> Typ `A` -> `216.150.1.1` (status: `wykonany`, `Valid Configuration`)
   - `www.sprawista.pl` -> Typ `CNAME` -> `8be676ab9f71b6c0.vercel-dns-016.com` (status: `wykonany`, `Valid Configuration`)
 - **Hosting / PaaS**: Vercel (zespół `Political Dark Matter`, projekt `sprawista`, Next.js 15.2.9)
-- **GitHub**: [https://github.com/JanTDom/SPRAWISTA](https://github.com/JanTDom/SPRAWISTA) (gałąź `main`, najnowszy commit `0fb082e`)
+- **GitHub**: [https://github.com/JanTDom/SPRAWISTA](https://github.com/JanTDom/SPRAWISTA) (gałąź `main`, commit `f841ebe`)
 - **Baza Danych**: Supabase (`vrucfsiwlqywtbgrubxa`, region `aws-0-eu-west-2`)
 - **Warstwa AI**: Gemini 2.5 Flash (`GEMINI_API_KEY` w Vercel Environment Variables)
+- **Silnik Kwantowy / Optymalizacyjny**: YourQuantum API (`YOURQUANTUM_API_KEY=yq_live_master_aff0d626d1dd85ed88ab023b`)
 
 ---
 
-## 2. Praca na Realnych Dokumentach i Plastyczność dla Prawnika
-- [x] **Zero zakodowanych na stałe fikcyjnych pism**: usunięto z domyślnego widoku mocki spraw budowlanych (Budimex / spękania stropu / faktury korygujące).
-- [x] **Czysty Pulpit Spraw (`/app/sprawy`)**: elegancki stan pusty z natychmiastową możliwością utworzenia nowej sprawy procesowej na podstawie realnych danych.
-- [x] **Kreator Nowej Sprawy**: wprowadzenie sygnatury akt, stron, sądu, wydziału, wartości sporu i trybu (cywilny zwykły / gospodarczy) z zapisem w pamięci lokalnej przeglądarki (`localStorage`).
-- [x] **Płynna Ingerencja Prawnika na Każdym Poziomie**:
-  - Edycja nagłówka sądu, sygnatury, stron, W.P.S. i daty w locie,
-  - Dynamiczne dodawanie, usuwanie i edycja wniosków petitum,
-  - Swobodna edycja sekcji i akapitów uzasadnienia z podziałem na markdown,
-  - Dodawanie i usuwanie faktów z osi czasu oraz zarzutów z mapy sporu,
-  - Bezpośredni eksport zmodyfikowanego pisma do edytowalnego formatu Word (`.docx`).
-- [x] **Wyciąganie Wniosków z Części Dokumentu (Text-to-Insight Toolbar)**:
-  - Selekcja dowolnego akapitu w panelu akt sprawy,
-  - 📌 Wstaw jako dowód (automatyczne powołanie w uzasadnieniu z odnośnikiem do karty akt),
-  - ⚖️ Utwórz zarzut procesowy na podstawie zaznaczenia,
-  - 📅 Dodaj fakt do chronologii zdarzeń,
-  - ✦ AI Wniosek — analiza zaznaczonego fragmentu przez Gemini 2.5 Flash pod kątem riposty powoda i podstawy KPC.
+## 2. Integracja Kwantowo-Hybrydowa YourQuantum
+- [x] **Zapisanie i zabezpieczenie klucza API**: klucz `yq_live_master_aff0d626d1dd85ed88ab023b` skonfigurowany w `.env.local` z autoryzacją Bearer i X-API-Key.
+- [x] **Klient `YourQuantumClient` (`yourquantum-client.ts`)**: obsługa protokołu `UniversalComputeRequest`, modeli QUBO/Ising, CP-SAT oraz Hybrid Benders z paszportami kryptograficznymi SHA-256 i wskaźnikami odporności.
+- [x] **Usługa `QuantumStrategyOptimizer` (`quantum-strategy-optimizer.ts`)**:
+  - Modelowanie kombinatorycznego problemu wyboru zarzutów procesowych (NP-trudny problem koalicji zarzutów),
+  - Automatyczne wykrywanie sprzeczności procesowych (np. zarzut nieistnienia/nieważności umowy z art. 58 K.c. vs stanowczy zarzut potrącenia z art. 498 K.c.),
+  - Wyznaczanie zarzutów głównych, ewentualnych (z ostrożności procesowej) oraz odradzanych z uwagi na ryzyko procesowe,
+  - Wycena odporności linii obrony (wskaźnik `robustnessScore`).
+- [x] **Endpoint API (`/api/quantum-strategy`)**: bezpieczna trasa Next.js łącząca pulpit prawnika z silnikiem obliczeniowym.
+- [x] **UI w Warsztacie (`WorkspaceShell`)**:
+  - Dedykowany przycisk `⚛️ Kwantowa optymalizacja` w zakładce *Mapa zarzutów*,
+  - Interaktywny panel prezentujący wynik odporności, solver, paszport SHA-256 oraz rekomendacje taktyczne dla każdego zarzutu.
 
 ---
 
-## 3. Poprawki Mobilne (Mobile Ergonomics & Responsive Design)
-- [x] **Menu Hamburgerowe na Mobile (`SiteHeader`)**: responsywne menu z pełną nawigacją (Jak działa, Bezpieczeństwo, Cennik, Pulpit) bez ściskania napisów.
-- [x] **Przełącznik Widoku w Warsztacie (`WorkspaceShell`)**: dedykowany przełącznik `[ 📝 Pismo ] | [ 📁 Akta ]` eliminujący ucinanie ekranu i blokowanie scrolla.
-- [x] **Brak Ucinania Treści**: dodanie `pb-36` i elastycznych kontenerów `overflow-y-auto overscroll-contain` gwarantujących swobodne przewijanie całej treści pisma i akt na każdym telefonie.
-- [x] **Kompaktowe Paski Stanu**: zoptymalizowany nagłówek dla ekranów od 320px do 420px.
+## 3. Praca na Realnych Dokumentach i Plastyczność dla Prawnika
+- [x] **Zero fikcyjnych pism**: brak sztucznych dokumentów Budimexu w domyślnym widoku.
+- [x] **Czysty Pulpit Spraw (`/app/sprawy`)**: elegancki stan pusty z kreatorem nowej sprawy.
+- [x] **Płynna Ingerencja Prawnika**: modyfikacja petitum, uzasadnienia, stron, wniosków dowodowych i natychmiastowy eksport DOCX.
+- [x] **Toolbar Wyciągania Wniosków z Zaznaczenia**: wstawianie dowodu, tworzenie zarzutu, dodawanie faktu do osi czasu, analiza Gemini AI.
 
 ---
 
-## 4. Zestaw Testów i Jakość
-- **43 testy jednostkowe i integracyjne**: 100% pass (`npm test`).
+## 4. Jakość i Testy (Fable 5.1)
+- **45 testów jednostkowych i integracyjnych**: 100% pass (`npm test`).
 - **TypeScript strict**: 0 błędów (`npx tsc --noEmit`).
-- **Next.js**: 15.2.9 production build zakończony z kodem 0.
+- **Next.js 15.2.9**: produkcyjny build z 11 zoptymalizowanymi trasami (kod 0).
